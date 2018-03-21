@@ -3,25 +3,28 @@
     <h1>SWOL</h1>
     <form @submit.prevent="handleSubmit" action="#" method="post">
       <fieldset>
-        <select v-model="exercise">
+        <select v-model="exercise" required>
           <option disabled selected value>Select workout</option>
           <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
         </select>
         <label>Weight</label>
         <input type="number" v-model.number="weight" min="0" step="5">
         <label>Sets</label>
-        <input type="number" v-model.number="sets" min="1">
+        <input type="number" v-model.number="sets" min="1" required>
         <label>Reps</label>
-        <input type="number" v-model.number="reps" min="1">
+        <input type="number" v-model.number="reps" min="1" required>
         <button type="submit">Add Workout</button>
       </fieldset>
     </form>
-    <h3>Workout session</h3>
+    <h4>Workout session</h4>
     <template v-if="sessions.length > 0">
-      <div v-for="(workout, index) in sessions" :key="index">
-        <span>{{ workout.name }} - {{ workout.weight }}lbs, {{ workout.sets }} sets and {{ workout.reps }} reps</span>
-      </div>
-      <h5>Nice, keep going!</h5>
+      <ul>
+      <li v-for="(workout, index) in sessions" :key="index">
+        <h5>{{ workout.exercise }}</h5>
+        <span>{{ workout.weight }}, {{ workout.sets }} sets x {{ workout.reps }} reps</span>
+      </li>
+      </ul>
+      <h4>Nice, keep going!</h4>
     </template>
     <template v-else>
       <h5>What a loser, you haven't done shit.</h5>
@@ -39,14 +42,16 @@ export default {
     return {
       exercise: '',
       weight: null,
-      sets: null,
-      reps: null,
+      sets: 3,
+      reps: 10,
       sessions: []
     }
   },
   methods: {
     handleSubmit: function () {
-      this.sessions.push({
+      !this.weight ? this.weight = 'freeweight' : this.weight = this.weight + 'lbs'
+
+      this.sessions.unshift({
         exercise: this.exercise,
         weight: this.weight,
         sets: this.sets,
@@ -59,9 +64,12 @@ export default {
 
 <style scoped>
 #app {
-  padding: 2em
+  padding: 1em 2em
+}
+h5 {
+  margin: 0
 }
 input {
-  width: 80px
+  width: 40px
 }
 </style>
