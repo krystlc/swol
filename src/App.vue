@@ -20,8 +20,8 @@
     <template v-if="sessions.length > 0">
       <ul>
       <li v-for="(workout, index) in sessions" :key="index">
-        <h5>{{ workout.exercise }}</h5>
-        <span>{{ workout.weight ? workout.weight + 'lbs' : 'freeweight' }}, {{ workout.sets }} sets x {{ workout.reps }} reps</span>
+        <h5>{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></h5>
+        <span>{{ workout.sets }} sets x {{ workout.reps }} reps</span>
       </li>
       </ul>
       <h4>Nice, keep going!</h4>
