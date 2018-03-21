@@ -21,7 +21,7 @@
       <ul>
       <li v-for="(workout, index) in sessions" :key="index">
         <h5>{{ workout.exercise }}</h5>
-        <span>{{ workout.weight }}, {{ workout.sets }} sets x {{ workout.reps }} reps</span>
+        <span>{{ workout.weight ? workout.weight + 'lbs' : 'freeweight' }}, {{ workout.sets }} sets x {{ workout.reps }} reps</span>
       </li>
       </ul>
       <h4>Nice, keep going!</h4>
@@ -49,8 +49,6 @@ export default {
   },
   methods: {
     handleSubmit: function () {
-      !this.weight ? this.weight = 'freeweight' : this.weight = this.weight + 'lbs'
-
       this.sessions.unshift({
         exercise: this.exercise,
         weight: this.weight,
