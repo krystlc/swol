@@ -22,6 +22,7 @@
       <li v-for="(workout, index) in sessions" :key="index">
         <h5>{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></h5>
         <span>{{ workout.sets }} sets x {{ workout.reps }} reps</span>
+        <button @click="deleteWorkout(index)">delete</button>
       </li>
       </ul>
       <h4>Nice, keep going!</h4>
@@ -55,6 +56,9 @@ export default {
         sets: this.sets,
         reps: this.reps
       })
+    },
+    deleteWorkout: function (key) {
+      this.sessions.splice(key, 1)
     }
   }
 }
