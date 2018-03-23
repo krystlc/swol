@@ -12,10 +12,14 @@
       <div class="container">
         <h1 class="title">Workout session</h1>
         <template v-if="sessions.length > 0">
-          <div class="tile" v-for="(workout, index) in sessions" :key="index">
-            <h5>{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></h5>
-            <span>{{ workout.sets }} sets x {{ workout.reps }} reps</span>
-            <button @click="deleteWorkout(index)">delete</button>
+          <div class="tile is-ancestor">
+            <div class="tile is-parent" v-for="(workout, index) in sessions" :key="index">
+              <div class="tile is-child box">
+                <h5 class="subtitle">{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></h5>
+                <p>{{ workout.sets }} sets x {{ workout.reps }} reps</p>
+                <button @click="deleteWorkout(index)">delete</button>
+              </div>
+            </div>
           </div>
         </template>
         <template v-else>
@@ -29,6 +33,7 @@
           <p class="modal-card-title">Login</p>
         </header>
         <section class="modal-card-body">
+          <div class="field is-grouped is-grouped-multiline">
             <b-field label="Exercise">
               <b-select placeholder="Select exercise" v-model="exercise" required>
                 <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
@@ -43,6 +48,7 @@
             <b-field label="Reps">
               <b-input type="number" v-model.number="reps" min="1" required></b-input>
             </b-field>
+          </div>
         </section>
         <footer class="modal-card-foot">
           <button class="button" type="button" @click="$parent.close()">Close</button>
