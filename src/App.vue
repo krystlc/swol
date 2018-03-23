@@ -8,16 +8,63 @@
         </div>
       </div>
     </section>
+    <hr>
+    <section class="section is-paddingless">
+    <form @submit.prevent="handleSubmit" action="#" method="post">
+      <div class="container level">
+        <div class="level-left">
+          <div class="level-item">
+            <p class="subtitle is-6">Exercise</p>
+          </div>
+          <div class="level-item">
+              <b-field>
+                <b-select placeholder="Select exercise" v-model="exercise" required>
+                  <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
+                </b-select>
+              </b-field>
+          </div>
+          <div class="level-item">
+            <p class="subtitle is-6">Weight</p>
+          </div>
+          <div class="level-item">
+              <b-field>
+                <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
+              </b-field>
+          </div>
+          <div class="level-item">
+            <p class="subtitle is-6">Sets</p>
+          </div>
+          <div class="level-item">
+              <b-field>
+                <b-input type="number" v-model.number="sets" min="1" required></b-input>
+              </b-field>
+          </div>
+          <div class="level-item">
+            <p class="subtitle is-6">Reps</p>
+          </div>
+          <div class="level-item">
+              <b-field>
+                <b-input type="number" v-model.number="reps" min="1" required></b-input>
+              </b-field>
+          </div>
+          <div class="level-item">
+            <button type="submit" class="button is-primary">Add Workout</button>
+          </div>
+        </div>
+      </div>
+    </form>
+    </section>
+    <hr>
     <section class="section">
-      <div class="container">
+      <div class="container is-medium">
         <h1 class="title">Workout session</h1>
         <template v-if="sessions.length > 0">
           <div class="tile is-ancestor">
             <div class="tile is-parent" v-for="(workout, index) in sessions" :key="index">
               <div class="tile is-child box">
-                <h5 class="subtitle">{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></h5>
-                <p>{{ workout.sets }} sets x {{ workout.reps }} reps</p>
-                <button @click="deleteWorkout(index)">delete</button>
+                <button @click="deleteWorkout(index)" class="delete is-pulled-right"></button>
+                <p class="title is-4">{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></p>
+                <p class="subtitle is-5">{{ workout.sets }} sets x {{ workout.reps }} reps</p>
               </div>
             </div>
           </div>
@@ -27,35 +74,6 @@
         </template>
       </div>
     </section>
-    <form @submit.prevent="handleSubmit" action="#" method="post">
-      <div class="modal-card" style="width: auto">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Login</p>
-        </header>
-        <section class="modal-card-body">
-          <div class="field is-grouped is-grouped-multiline">
-            <b-field label="Exercise">
-              <b-select placeholder="Select exercise" v-model="exercise" required>
-                <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
-              </b-select>
-            </b-field>
-            <b-field label="Weight">
-              <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
-            </b-field>
-            <b-field label="Sets">
-              <b-input type="number" v-model.number="sets" min="1" required></b-input>
-            </b-field>
-            <b-field label="Reps">
-              <b-input type="number" v-model.number="reps" min="1" required></b-input>
-            </b-field>
-          </div>
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button" type="button" @click="$parent.close()">Close</button>
-          <button type="submit" class="button is-primary">Add Workout</button>
-        </footer>
-      </div>
-    </form>
     <footer class="footer">
       <div class="container">
         <div class="content has-text-centered">
@@ -89,6 +107,7 @@ export default {
         sets: this.sets,
         reps: this.reps
       })
+      this.weight = null
     },
     deleteWorkout: function (key) {
       this.sessions.splice(key, 1)
@@ -96,3 +115,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.control .input {
+  width: 80px;
+}
+</style>
