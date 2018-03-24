@@ -29,8 +29,7 @@
                   <div class="box">
                     <button @click="deleteWorkout(index)" class="delete is-pulled-right"></button>
                     <p class="title is-4">{{ workout.exercise }} <small v-if="workout.weight">({{ workout.weight }} lbs)</small></p>
-                    <p class="subtitle is-5">{{ workout.sets }} sets x {{ workout.reps }} reps</p>
-                    <small v-if="workout.resistance">with resistance band</small>
+                    <p class="subtitle is-5">{{ workout.sets }} sets x {{ workout.reps }} reps <small v-if="workout.resistance">with resistance band</small></p>
                   </div>
                 </div>
               </template>
