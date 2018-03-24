@@ -1,86 +1,54 @@
 <template>
   <div id="app">
-    <section class="hero">
+    <section class="hero is-fullheight">
       <div class="hero-body">
         <div class="container">
-          <h1 class="title">SWOL</h1>
-          <h2 class="subtitle">Log those gains</h2>
-        </div>
-      </div>
-    </section>
-    <hr>
-    <section class="section is-paddingless">
-    <form @submit.prevent="handleSubmit" action="#" method="post">
-      <div class="container level">
-        <div class="level-left">
-          <div class="level-item">
-            <p class="subtitle is-6">Exercise</p>
-          </div>
-          <div class="level-item">
-              <b-field>
-                <b-select placeholder="Select exercise" v-model="exercise" required>
-                  <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
-                </b-select>
-              </b-field>
-          </div>
-          <div class="level-item">
-            <p class="subtitle is-6">Weight</p>
-          </div>
-          <div class="level-item">
-              <b-field>
-                <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
-              </b-field>
-          </div>
-          <div class="level-item">
-            <p class="subtitle is-6">Sets</p>
-          </div>
-          <div class="level-item">
-              <b-field>
-                <b-input type="number" v-model.number="sets" min="1" required></b-input>
-              </b-field>
-          </div>
-          <div class="level-item">
-            <p class="subtitle is-6">Reps</p>
-          </div>
-          <div class="level-item">
-              <b-field>
-                <b-input type="number" v-model.number="reps" min="1" required></b-input>
-              </b-field>
-          </div>
-          <div class="level-item">
-            <button type="submit" class="button is-primary">Add Workout</button>
-          </div>
-        </div>
-      </div>
-    </form>
-    </section>
-    <hr>
-    <section class="section">
-      <div class="container is-medium">
-        <h1 class="title">Workout session</h1>
-        <template v-if="sessions.length > 0">
-          <div class="tile is-ancestor">
-            <div class="tile is-parent" v-for="(workout, index) in sessions" :key="index">
-              <div class="tile is-child box">
-                <button @click="deleteWorkout(index)" class="delete is-pulled-right"></button>
-                <p class="title is-4">{{ workout.exercise }} <small>({{ workout.weight ? workout.weight + 'lbs' : 'bodyweight' }})</small></p>
-                <p class="subtitle is-5">{{ workout.sets }} sets x {{ workout.reps }} reps</p>
-              </div>
+          <div class="columns is-vcentered">
+            <div class="column">
+              <h1 class="title is-2">SWOL</h1>
+              <h5 class="subtitle is-5">Do you even swol?</h5>
+            </div>
+            <div class="column">
+              <form @submit.prevent="handleSubmit" action="#" method="post">
+                <b-field grouped>
+                <b-field label="Exercise">
+                  <b-select v-model="exercise" required>
+                    <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
+                  </b-select>
+                </b-field>
+                <b-field label="Weight">
+                  <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
+                </b-field>
+                <b-field label="Sets">
+                  <b-input type="number" v-model.number="sets" min="1" required></b-input>
+                </b-field>
+                <b-field label="Reps">
+                  <b-input type="number" v-model.number="reps" min="1" required></b-input>
+                </b-field>
+                <b-field label="-">
+                <button type="submit" class="button">Add Workout</button>
+                </b-field>
+                </b-field>
+              </form>
+              <template v-if="sessions.length > 0">
+                <div class="" v-for="(workout, index) in sessions" :key="index">
+                  <div class="box">
+                    <button @click="deleteWorkout(index)" class="delete is-pulled-right"></button>
+                    <p class="title is-4">{{ workout.exercise }} <small v-if="workout.weight">({{ workout.weight }} lbs)</small></p>
+                    <p class="subtitle is-5">{{ workout.sets }} sets x {{ workout.reps }} reps</p>
+                  </div>
+                </div>
+              </template>
             </div>
           </div>
-        </template>
-        <template v-else>
-          <h5>What a loser, you haven't done shit.</h5>
-        </template>
-      </div>
-    </section>
-    <footer class="footer">
-      <div class="container">
-        <div class="content has-text-centered">
-          <p><strong>SWOL</strong> 2018.</p>
         </div>
       </div>
-    </footer>
+      <div class="hero-foot">
+        <div class="container">
+            <p class="has-text-centered has-text-grey-light">SWOL by Bad Hombres</p>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 
