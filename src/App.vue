@@ -7,19 +7,7 @@
             <div class="column">
               <h1 class="title is-2">SWOL</h1>
               <h5 class="subtitle is-5">Do you even swol?</h5>
-              <form @submit.prevent="handleSubmit" action="#" method="post">
-                <b-field grouped group-multiline>
-                  <b-select v-model="exercise" required>
-                    <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
-                  </b-select>
-                  <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
-                  <b-input type="number" v-model.number="sets" min="1" required></b-input>
-                  <b-input type="number" v-model.number="reps" min="1" required></b-input>
-                  <p class="control">
-                    <button type="submit" class="button is-primary">Add Workout</button>
-                  </p>
-                </b-field>
-              </form>
+              <workout-form v-on:workout="handleWorkout"></workout-form>
             </div>
             <div class="column">
               <template v-if="sessions.length > 0">
@@ -45,29 +33,21 @@
 </template>
 
 <script>
-import exerciseData from './assets/exercises.json'
+import workoutForm from '@/components/WorkoutForm'
 
 export default {
+  components: {
+    workoutForm
+  },
   name: 'App',
-  exList: exerciseData.exercises,
   data () {
     return {
-      exercise: '',
-      weight: null,
-      sets: 3,
-      reps: 10,
       sessions: []
     }
   },
   methods: {
-    handleSubmit: function () {
-      this.sessions.unshift({
-        exercise: this.exercise,
-        weight: this.weight,
-        sets: this.sets,
-        reps: this.reps
-      })
-      this.weight = null
+    handleWorkout: function (payload) {
+      this.sessions.unshift(payload)
     },
     deleteWorkout: function (key) {
       this.sessions.splice(key, 1)
