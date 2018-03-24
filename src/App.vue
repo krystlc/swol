@@ -7,29 +7,21 @@
             <div class="column">
               <h1 class="title is-2">SWOL</h1>
               <h5 class="subtitle is-5">Do you even swol?</h5>
-            </div>
-            <div class="column">
               <form @submit.prevent="handleSubmit" action="#" method="post">
-                <b-field grouped>
-                <b-field label="Exercise">
+                <b-field grouped group-multiline>
                   <b-select v-model="exercise" required>
                     <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
                   </b-select>
-                </b-field>
-                <b-field label="Weight">
                   <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
-                </b-field>
-                <b-field label="Sets">
                   <b-input type="number" v-model.number="sets" min="1" required></b-input>
-                </b-field>
-                <b-field label="Reps">
                   <b-input type="number" v-model.number="reps" min="1" required></b-input>
-                </b-field>
-                <b-field label="-">
-                <button type="submit" class="button">Add Workout</button>
-                </b-field>
+                  <p class="control">
+                    <button type="submit" class="button is-primary">Add Workout</button>
+                  </p>
                 </b-field>
               </form>
+            </div>
+            <div class="column">
               <template v-if="sessions.length > 0">
                 <div class="" v-for="(workout, index) in sessions" :key="index">
                   <div class="box">
@@ -83,9 +75,3 @@ export default {
   }
 }
 </script>
-
-<style>
-.control .input {
-  width: 80px;
-}
-</style>
