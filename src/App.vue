@@ -7,7 +7,10 @@
             <div class="column">
               <h1 class="title is-2">SWOL</h1>
               <h5 class="subtitle is-5">Do you even swol?</h5>
-              <workout-form v-on:workout="handleWorkout"></workout-form>
+              <button class="button is-primary is-medium" @click="isComponentModalActive = true">Add workout</button>
+              <b-modal :active.sync="isComponentModalActive" has-modal-card>
+                <workout-form v-on:workout="handleWorkout"></workout-form>
+              </b-modal>
             </div>
             <div class="column">
               <template v-if="sessions.length > 0">
@@ -42,12 +45,17 @@ export default {
   name: 'App',
   data () {
     return {
-      sessions: []
+      sessions: [],
+      isComponentModalActive: false
     }
   },
   methods: {
     handleWorkout: function (payload) {
       this.sessions.unshift(payload)
+      this.$toast.open({
+        message: 'Nice, keep going!',
+        type: 'is-success'
+      })
     },
     deleteWorkout: function (key) {
       this.sessions.splice(key, 1)

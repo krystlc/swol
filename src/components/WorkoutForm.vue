@@ -8,7 +8,7 @@
       <b-input type="number" v-model.number="sets" min="1" required></b-input>
       <b-input type="number" v-model.number="reps" min="1" required></b-input>
       <p class="control">
-        <button type="submit" class="button is-primary">Add Workout</button>
+        <button type="submit" class="button is-primary" @click="$parent.close()">Add Workout</button>
       </p>
     </b-field>
   </form>
