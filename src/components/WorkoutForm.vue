@@ -1,16 +1,33 @@
 <template>
   <form @submit.prevent="handleSubmit" action="#" method="post">
-    <b-field grouped group-multiline>
-      <b-select v-model="exercise" required>
-        <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
-      </b-select>
-      <b-input type="number" v-model.number="weight" min="0" step="5"></b-input>
-      <b-input type="number" v-model.number="sets" min="1" required></b-input>
-      <b-input type="number" v-model.number="reps" min="1" required></b-input>
-      <p class="control">
+    <div class="modal-card" style="width: auto">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Add workout</p>
+      </header>
+      <section class="modal-card-body">
+        <b-field label="Exercise">
+          <b-select v-model="exercise" required expanded>
+            <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
+          </b-select>
+        </b-field>
+        <b-field label="Weight" class="nums">
+          <b-input type="number" v-model.number="weight" min="0"></b-input>
+        </b-field>
+        <b-field grouped class="nums">
+          <b-field label="Sets">
+            <b-input type="number" v-model.number="sets" min="1" required></b-input>
+          </b-field>
+          <b-field label="Reps">
+            <b-input type="number" v-model.number="reps" min="1" required></b-input>
+          </b-field>
+        </b-field>
+        <b-checkbox v-model="resistance">Resistance band</b-checkbox>
+      </section>
+      <footer class="modal-card-foot">
+        <button class="button" type="button" @click="$parent.close()">Close</button>
         <button type="submit" class="button is-primary" @click="$parent.close()">Add Workout</button>
-      </p>
-    </b-field>
+      </footer>
+    </div>
   </form>
 </template>
 
@@ -25,7 +42,8 @@ export default {
       exercise: '',
       weight: null,
       sets: 3,
-      reps: 10
+      reps: 10,
+      resistance: false
     }
   },
   methods: {
@@ -34,10 +52,17 @@ export default {
         exercise: this.exercise,
         weight: this.weight,
         sets: this.sets,
-        reps: this.reps
+        reps: this.reps,
+        resistance: this.resistance
       })
       this.weight = null
     }
   }
 }
 </script>
+
+<style scoped>
+.field.nums .field {
+  width: 90px
+}
+</style>
