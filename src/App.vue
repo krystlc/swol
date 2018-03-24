@@ -8,16 +8,16 @@
               <h1 class="title is-2">SWOL</h1>
               <h5 class="subtitle is-5">Do you even swol?</h5>
               <b-field grouped>
-              <p class="control">
-                <button class="button is-primary is-medium" @click="isComponentModalActive = true">
-                  <b-icon icon="plus"></b-icon>
-                </button>
-              </p>
-              <p class="control" v-if="sessions.length > 0">
-                <button class="button is-info is-medium" @click="handleSave">
-                  <b-icon icon="content-save-all"></b-icon>
-                </button>
-              </p>
+                <p class="control">
+                  <button class="button is-primary is-medium" @click="isComponentModalActive = true">
+                    <b-icon icon="plus"></b-icon>
+                  </button>
+                </p>
+                <p class="control" v-if="sessions.length > 0">
+                  <button class="button is-info is-medium" @click="handleSave">
+                    <b-icon icon="content-save-all"></b-icon>
+                  </button>
+                </p>
               </b-field>
               <b-modal :active.sync="isComponentModalActive" has-modal-card>
                 <workout-form v-on:workout="handleWorkout"></workout-form>
