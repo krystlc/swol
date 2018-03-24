@@ -9,7 +9,7 @@
               <h5 class="subtitle is-5">Do you even swol?</h5>
               <b-field grouped>
                 <p class="control">
-                  <button class="button is-primary is-medium" @click="isComponentModalActive = true">
+                  <button class="button is-primary is-medium" @click="isFormActive = true">
                     <b-icon icon="plus"></b-icon>
                   </button>
                 </p>
@@ -19,7 +19,7 @@
                   </button>
                 </p>
               </b-field>
-              <b-modal :active.sync="isComponentModalActive" has-modal-card>
+              <b-modal :active.sync="isFormActive" has-modal-card>
                 <workout-form v-on:workout="handleWorkout"></workout-form>
               </b-modal>
             </div>
@@ -57,7 +57,7 @@ export default {
   data () {
     return {
       sessions: [],
-      isComponentModalActive: false
+      isFormActive: false
     }
   },
   methods: {
