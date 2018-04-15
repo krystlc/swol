@@ -6,9 +6,17 @@
       </header>
       <section class="modal-card-body">
         <b-field label="Exercise">
-          <b-select v-model="exercise" required expanded>
-            <option v-for="(exName, index) in $options.exList" :key="index">{{ exName }}</option>
-          </b-select>
+          <b-autocomplete
+            v-model="exercise"
+            placeholder="e.g. Pull-ups"
+            :keep-first="keepFirst"
+            :data="filteredDataObj"
+            field="name"
+            @select="option => selected = option"
+            required
+            expanded>
+            <template slot="empty">No results found</template>
+          </b-autocomplete>
         </b-field>
         <b-field label="Weight" class="nums">
           <b-input type="number" v-model.number="weight" min="0"></b-input>
@@ -32,18 +40,17 @@
 </template>
 
 <script>
-import exerciseData from '../assets/exercises.json'
-
 export default {
-  name: 'workout-form',
-  exList: exerciseData.exercises,
+  props: ['list'],
   data () {
     return {
+      keepFirst: true,
       exercise: '',
       weight: null,
       sets: 3,
       reps: 10,
-      resistance: false
+      resistance: false,
+      selected: null
     }
   },
   methods: {
@@ -57,12 +64,22 @@ export default {
       })
       this.weight = null
     }
+  },
+  computed: {
+    filteredDataObj () {
+      return this.list.filter((option) => {
+        return option.name
+          .toString()
+          .toLowerCase()
+          .indexOf(this.exercise.toLowerCase()) >= 0
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
 .field.nums .field {
-  width: 90px
+  width: 90px;
 }
 </style>

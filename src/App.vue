@@ -13,19 +13,19 @@
                     <b-icon icon="plus"></b-icon>
                   </button>
                 </p>
-                <p class="control" v-if="sessions.length > 0">
+                <p class="control" v-if="session.length > 0">
                   <button class="button is-info is-medium" @click="handleSave">
                     <b-icon icon="content-save-all"></b-icon>
                   </button>
                 </p>
               </b-field>
               <b-modal :active.sync="isFormActive" has-modal-card>
-                <workout-form v-on:workout="handleWorkout"></workout-form>
+                <workout-form @workout="handleWorkout" :list="exercises"></workout-form>
               </b-modal>
             </div>
             <div class="column">
-              <template v-if="sessions.length > 0">
-                <div class="" v-for="(workout, index) in sessions" :key="index">
+              <template v-if="session.length > 0">
+                <div class="" v-for="(workout, index) in session" :key="index">
                   <div class="box">
                     <button @click="deleteWorkout(index)" class="delete is-pulled-right"></button>
                     <p class="title is-4">{{ workout.exercise }} <small v-if="workout.weight">({{ workout.weight }} lbs)</small></p>
@@ -47,6 +47,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import workoutForm from '@/components/WorkoutForm'
 
 export default {
@@ -56,20 +57,31 @@ export default {
   name: 'App',
   data () {
     return {
-      sessions: [],
+      session: [],
+      exercises: [],
       isFormActive: false
     }
   },
+  created () {
+    axios
+      .get(`https://wger.de/api/v2/exercise/?language=2&limit=1000&status=2`)
+      .then(response => {
+        this.exercises = response.data.results
+      })
+      .catch(err => {
+        this.errors.push(err)
+      })
+  },
   methods: {
     handleWorkout: function (payload) {
-      this.sessions.unshift(payload)
+      this.session.unshift(payload)
       this.$toast.open({
         message: 'Nice, keep going!',
         type: 'is-success'
       })
     },
     deleteWorkout: function (key) {
-      this.sessions.splice(key, 1)
+      this.session.splice(key, 1)
     },
     handleSave: function (data) {
       alert('nothing here yet', data)
