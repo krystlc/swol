@@ -10,7 +10,9 @@
   "dependencies": {
     "axios": "^0.18.0",
     "buefy": "^0.6.6",
-    "vue": "^2.5.17"
+    "firebase": "^5.4.0",
+    "vue": "^2.5.17",
+    "vuefire": "^2.0.0-alpha.14"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",

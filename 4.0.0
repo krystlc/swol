@@ -1,0 +1,7 @@
+
+> grpc@1.13.1 install D:\Alex\Projects\swol\node_modules\grpc
+> node-pre-gyp install --fallback-to-build --library=static_library
+
+[grpc] Success: "D:\Alex\Projects\swol\node_modules\grpc\src\node\extension_binary\node-v57-win32-x64-unknown\grpc_node.node" is installed via remote
++ firebase@5.4.0
+added 117 packages in 54.98s
