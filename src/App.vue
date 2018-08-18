@@ -51,10 +51,8 @@ import axios from 'axios'
 import workoutForm from '@/components/WorkoutForm'
 
 export default {
-  components: {
-    workoutForm
-  },
-  name: 'App',
+  components: {workoutForm},
+  name: 'app',
   data () {
     return {
       session: [],
