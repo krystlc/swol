@@ -66,10 +66,10 @@ export default {
       const created = new Date()
       db.collection('sessions').add({ workout, created })
         .then(res => {
-          console.log(res, 'posted')
+          alert('nice', res)
         })
         .catch(err =>{
-          console.error(err)
+          alert(err)
         })
       this.workout.weight = null
     },
