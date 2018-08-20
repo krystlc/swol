@@ -21,19 +21,15 @@
       </div>
       <div class="past-sessions">
         <h5 class="subtitle">Past Sessions</h5>
-        <template v-if="userSessions">
-          <workout-table v-for="(data, i) in userSessions" :key="i" :data="data.session">
-            <h5>{{ data.created.seconds | moment("dddd, MMMM Do YYYY, h:mma") }}</h5>
-          </workout-table>
-        </template>
-        <span v-else>Nothing to see here.</span>
+        <workout-table v-for="(data, i) in userSessions" :key="i" :data="data.session">
+          <h5>{{ data.created.seconds | moment("dddd, MMMM Do YYYY, h:mma") }}</h5>
+        </workout-table>
+        <span v-if="!userSessions">Nothing to see here.</span>
       </div>
       <b-modal :active.sync="isFormActive" has-modal-card>
         <workout-form @workout="handleWorkout"/>
       </b-modal>
     </div>
-    <pre>{{ userSessions }}</pre>
-    <pre>{{ currentUser }}</pre>
   </section>
 </template>
 

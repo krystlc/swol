@@ -43,6 +43,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 const workout = {
   exercise: '',
   weight: null,
@@ -56,7 +58,6 @@ export default {
   data() {
     return {
       workout,
-      exercises: [],
       keepFirst: true,
     }
   },
@@ -73,8 +74,9 @@ export default {
     }
   },
   computed: {
+    ...mapState(['currentUser','exerciseList']),
     filteredDataObj() {
-      return this.exercises.data.filter(option => {
+      return this.exerciseList.filter(option => {
         return (
           option.name
             .toString()
