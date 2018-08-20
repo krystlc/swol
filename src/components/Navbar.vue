@@ -42,7 +42,11 @@ export default {
           this.user = result.user
         })
         .catch(err => {
-          console.error(err.message)
+          this.$toast.open({
+            duration: 5000,
+            message: `Oops! ${err.code}. Did you sign in?`,
+            type: 'is-danger'
+          })
         })
       this.isActive = false
     },
