@@ -12,6 +12,7 @@
     "buefy": "^0.6.6",
     "firebase": "^5.4.0",
     "vue": "^2.5.17",
+    "vue-moment": "^4.0.0",
     "vuefire": "^2.0.0-alpha.14"
   },
   "devDependencies": {

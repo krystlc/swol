@@ -38,11 +38,12 @@
         </footer>
       </div>
     </form>
+    <pre>{{ workout }}</pre>
   </div>
 </template>
 
 <script>
-import { exerciseStore as exercises, db } from '../main.js'
+import { exerciseStore as exercises } from '@/main'
 
 const workout = {
   exercise: '',
@@ -63,25 +64,14 @@ export default {
   },
   methods: {
     handleSubmit() {
-      const created = new Date()
-      db.collection('sessions').add({ workout, created })
-        .then(res => {
-          alert('nice', res)
-        })
-        .catch(err =>{
-          alert(err)
-        })
-      this.workout.weight = null
-    },
-    handleWorkout: function(payload) {
-      this.session.unshift(payload)
-      this.$toast.open({
-        message: 'Nice, keep going!',
-        type: 'is-success'
+      this.$emit('workout', {
+        exercise: this.workout.exercise,
+        weight: this.workout.weight,
+        sets: this.workout.sets,
+        reps: this.workout.reps,
+        resistance: this.workout.resistance
       })
-    },
-    deleteWorkout: function(key) {
-      this.session.splice(key, 1)
+      this.workout.weight = null
     }
   },
   computed: {
