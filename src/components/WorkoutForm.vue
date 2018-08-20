@@ -43,8 +43,6 @@
 </template>
 
 <script>
-import { exerciseStore as exercises } from '@/main'
-
 const workout = {
   exercise: '',
   weight: null,
@@ -58,7 +56,7 @@ export default {
   data() {
     return {
       workout,
-      exercises,
+      exercises: [],
       keepFirst: true,
     }
   },

@@ -21,8 +21,8 @@
       </div>
       <div class="past-sessions">
         <h5 class="subtitle">Past Sessions</h5>
-        <template v-if="sessions.length > 0">
-          <workout-table v-for="(data, i) in sessions" :key="i" :data="data.session">
+        <template v-if="userSessions">
+          <workout-table v-for="(data, i) in userSessions" :key="i" :data="data.session">
             <h5>{{ data.created.seconds | moment("dddd, MMMM Do YYYY, h:mma") }}</h5>
           </workout-table>
         </template>
@@ -32,27 +32,28 @@
         <workout-form @workout="handleWorkout"/>
       </b-modal>
     </div>
+    <pre>{{ userSessions }}</pre>
+    <pre>{{ currentUser }}</pre>
   </section>
 </template>
 
 <script>
-import { db } from '@/main.js'
+import { mapState } from 'vuex'
 import WorkoutTable from '@/components/WorkoutTable'
 import WorkoutForm from '@/components/WorkoutForm'
+
+let db 
 
 export default {
   components: { WorkoutTable, WorkoutForm },
   data() {
     return {
-      sessions: [],
       currentSession: [],
       isFormActive: false
     }
   },
-  firestore() {
-    return {
-      sessions: db.collection('sessions').orderBy('created')
-    }
+  computed: {
+    ...mapState(['currentUser','userSessions'])
   },
   methods: {
     handleWorkout: function (payload) {
