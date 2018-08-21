@@ -3,12 +3,10 @@ import 'firebase/firestore'
 
 // firebase init goes here
 const config = {
-  apiKey: 'AIzaSyDt7dZt1do0RiHVXQm55JaYXs734RbWd5g',
-  authDomain: 'swol-42b55.firebaseapp.com',
-  databaseURL: 'https://swol-42b55.firebaseio.com',
-  projectId: 'swol-42b55',
-  storageBucket: 'swol-42b55.appspot.com',
-  messagingSenderId: '134839827188'
+  apiKey: process.env.VUE_APP_API_KEY,
+  authDomain: process.env.VUE_APP_DOMAIN,
+  databaseURL: process.env.VUE_APP_DATABASE,
+  projectId: process.env.VUE_APP_PROJECT_ID,
 }
 firebase.initializeApp(config)
 
