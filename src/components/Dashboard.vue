@@ -22,6 +22,7 @@
       <div class="past-sessions">
         <h5 class="subtitle">Past Sessions</h5>
         <workout-table v-for="(data, i) in userSessions" :key="i" :data="data.session">
+          <a class="delete is-pulled-right" @click="deleteSession(data.id)"></a>
           <h5>{{ data.created.seconds | moment("dddd, MMMM Do YYYY, h:mma") }}</h5>
         </workout-table>
         <span v-if="!userSessions">Nothing to see here.</span>
@@ -37,8 +38,7 @@
 import { mapState } from 'vuex'
 import WorkoutTable from '@/components/WorkoutTable'
 import WorkoutForm from '@/components/WorkoutForm'
-
-let db 
+const fb = require('@/firebaseConfig.js')
 
 export default {
   components: { WorkoutTable, WorkoutForm },
@@ -52,6 +52,9 @@ export default {
     ...mapState(['currentUser','userSessions'])
   },
   methods: {
+    deleteSession(id) {
+      fb.sessionCollection.doc(id).delete()
+    },
     handleWorkout: function (payload) {
       this.currentSession.push(payload)
       this.$toast.open({
@@ -59,29 +62,35 @@ export default {
         type: 'is-success'
       })
     },
-    deleteWorkout(id) {
-      db.collection('sessions').doc(id).delete()
-    },
     saveSession() {
-      let date = new Date()
-      db.collection('sessions').add({
-          session: this.currentSession,
-          created: date
+      if (this.currentUser) {
+        let created = new Date()
+        fb.sessionCollection.add({
+          created,
+          uid: this.currentUser.uid,
+          session: this.currentSession
         })
-        .then(() => {
-          this.$toast.open({
-            message: 'Session saved!',
-            type: 'is-success'
+          .then(() => {
+            this.$toast.open({
+              message: 'Session saved!',
+              type: 'is-success'
+            })
+            this.currentSession = []
           })
-          this.currentSession = []
-        })
-        .catch(err => {
-          this.$toast.open({
-            duration: 5000,
-            message: `Oops! ${err.code}. Did you sign in?`,
-            type: 'is-danger'
+          .catch(err => {
+            this.$toast.open({
+              duration: 5000,
+              message: `Oops! ${err.code}. Did you sign in?`,
+              type: 'is-danger'
+            })
           })
+      } else {
+        this.$toast.open({
+          duration: 5000,
+          message: 'Dude, you gotta sign in first!',
+          type: 'is-warning'
         })
+      }
     }
   }
 }

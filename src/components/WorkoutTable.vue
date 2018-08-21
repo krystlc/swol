@@ -1,6 +1,5 @@
 <template>
   <div class="session">
-    <a class="delete is-pulled-right"></a>
     <slot></slot>
     <b-table :data="data" :columns="columns"></b-table>
   </div>

@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import App from './App'
-import router from './router/'
-import { store } from './store'
-const fb = require('./firebaseConfig')
+import App from '@/App'
+import router from '@/router/'
+import { store } from '@/store'
+const fb = require('@/firebaseConfig')
 
 import Buefy from 'buefy'
 import 'buefy/lib/buefy.css'
@@ -16,7 +16,7 @@ Vue.use(VueMoment)
 
 // handle page reloads
 let app
-fb.auth.onAuthStateChanged(user => {
+fb.auth.onAuthStateChanged(() => {
   if (!app) {
     app = new Vue({
       el: '#app',
