@@ -17,7 +17,7 @@ const currentUser = auth.currentUser
 
 // date issue fix according to firebase
 const settings = {
-    timestampsInSnapshots: true
+  timestampsInSnapshots: true
 }
 db.settings(settings)
 
@@ -25,8 +25,8 @@ db.settings(settings)
 const sessionCollection = db.collection('sessions')
 
 export {
-    db,
-    auth,
-    currentUser,
-    sessionCollection
+  db,
+  auth,
+  currentUser,
+  sessionCollection
 }
