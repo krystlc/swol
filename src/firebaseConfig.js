@@ -13,6 +13,7 @@ firebase.initializeApp(config)
 // firebase utils
 const db = firebase.firestore()
 const auth = firebase.auth()
+const provider = new firebase.auth.GoogleAuthProvider()
 const currentUser = auth.currentUser
 
 // date issue fix according to firebase
@@ -27,6 +28,7 @@ const sessionCollection = db.collection('sessions')
 export {
   db,
   auth,
+  provider,
   currentUser,
   sessionCollection
 }

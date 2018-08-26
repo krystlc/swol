@@ -8,29 +8,29 @@
         <section class="modal-card-body">
           <b-field label="Exercise">
             <b-autocomplete
-              v-model="workout.exercise"
+              v-model="exercise"
               placeholder="e.g. Pull-ups"
               :keep-first="keepFirst"
               :data="filteredDataObj"
               field="name"
-              @select="option => option === workout.selected"
+              @select="option => option === selected"
               required
               expanded>
               <template slot="empty">No results found</template>
             </b-autocomplete>
           </b-field>
           <b-field label="Weight" class="nums">
-            <b-input type="number" v-model.number="workout.weight" min="0"></b-input>
+            <b-input type="number" v-model.number="settings.weight" min="0" ref="weight"></b-input>
           </b-field>
           <b-field grouped class="nums">
             <b-field label="Sets">
-              <b-input type="number" v-model.number="workout.sets" min="1" required></b-input>
+              <b-input type="number" v-model.number="settings.sets" min="1" ref="sets" required></b-input>
             </b-field>
             <b-field label="Reps">
-              <b-input type="number" v-model.number="workout.reps" min="1" required></b-input>
+              <b-input type="number" v-model.number="settings.reps" min="1" ref="reps" required></b-input>
             </b-field>
           </b-field>
-          <b-checkbox v-model="workout.resistance">Resistance band</b-checkbox>
+          <b-checkbox v-model="resistance">Resistance band</b-checkbox>
         </section>
         <footer class="modal-card-foot">
           <button type="submit" class="button is-primary" @click="$parent.close()">Add Workout</button>
@@ -38,52 +38,51 @@
         </footer>
       </div>
     </form>
-    <pre>{{ workout }}</pre>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
-const workout = {
-  exercise: '',
-  weight: null,
-  sets: 3,
-  reps: 10,
-  resistance: false,
-  selected: null
-}
-
 export default {
   data() {
     return {
-      workout,
-      keepFirst: true,
+      exercise: '',
+      selected: null,
+      resistance: false,
+      keepFirst: true
     }
   },
   methods: {
     handleSubmit() {
       this.$emit('workout', {
-        exercise: this.workout.exercise,
-        weight: this.workout.weight,
-        sets: this.workout.sets,
-        reps: this.workout.reps,
-        resistance: this.workout.resistance
+        exercise: this.exercise,
+        weight: this.$refs.weight.value,
+        sets: this.$refs.sets.value,
+        reps: this.$refs.reps.value,
+        resistance: this.resistance
       })
-      this.workout.weight = null
     }
   },
   computed: {
-    ...mapState(['currentUser','exerciseList']),
+    ...mapState(['currentUser','exerciseList', 'userSettings']),
     filteredDataObj() {
       return this.exerciseList.filter(option => {
         return (
           option.name
             .toString()
             .toLowerCase()
-            .indexOf(this.workout.exercise.toLowerCase()) >= 0
+            .indexOf(this.exercise.toLowerCase()) >= 0
         )
       })
+    },
+    // load default user settings
+    settings() {
+      return {
+        weight: this.userSettings.weight,
+        sets: this.userSettings.sets,
+        reps: this.userSettings.reps
+      }
     }
   }
 }

@@ -1,7 +1,6 @@
 <template>
   <section class="section">
     <div class="container">
-      <h1 class="title">Dashboard</h1>
       <div class="current-session">
         <h5 class="subtitle">Current Session</h5>
         <b-field grouped>
@@ -25,7 +24,7 @@
           <a class="delete is-pulled-right" @click="deleteSession(data.id)"></a>
           <h5>{{ data.created.seconds | moment("dddd, MMMM Do YYYY, h:mma") }}</h5>
         </workout-table>
-        <span v-if="!userSessions">Nothing to see here.</span>
+        <span v-if="!userSessions">Empty :(</span>
       </div>
       <b-modal :active.sync="isFormActive" has-modal-card>
         <workout-form @workout="handleWorkout"/>

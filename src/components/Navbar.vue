@@ -1,19 +1,28 @@
 <template>
-  <nav class="navbar is-white is-fixed-top">
-    <div class="navbar-brand">
-      <router-link to="dashboard" class="navbar-item"><strong>SWOL</strong></router-link>
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" @click.prevent="isActive = !isActive">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-    <div class="navbar-menu" :class="{'is-active': isActive}">
-      <div class="navbar-end">
-        <span class="navbar-item" v-if="currentUser">
-          Hi, {{ firstName }}</span>
-        <a class="navbar-item" @click.prevent="signIn" v-if="!currentUser">Sign in</a>
-        <a class="navbar-item" @click.prevent="signOut" v-if="currentUser">Logout</a>
+  <nav>
+    <div class="container level is-mobile">
+      <div class="level-left">
+        <div class="level-item">
+          <p class="subtitle is-5">
+            <router-link to="/" class="logo" exact><strong>SWOL</strong></router-link>
+          </p>
+        </div>
+      </div>
+      <div class="level-right">
+        <p class="level-item" v-if="!currentUser">
+          <a class="button is-success" @click.prevent="signIn">Sign in</a>
+        </p>
+        <p class="level-item" v-else>
+          <a class="button" @click.prevent="signOut">Logout</a>
+        </p>
+        <p class="level-item">
+          <button class="button is-borderless" @click="isFormActive = true">
+            <b-icon icon="settings"></b-icon>
+          </button>
+        </p>
+      <b-modal :active.sync="isFormActive" has-modal-card>
+        <settings></settings>
+      </b-modal>
       </div>
     </div>
   </nav>
@@ -21,21 +30,23 @@
 
 <script>
 import { mapState } from 'vuex'
+import Settings from '@/components/Settings'
 import firebase from 'firebase/app'
 import 'firebase/auth'
 
 export default {
+  components: { Settings },
   data() {
     return {
-      isActive: false
+      settings: {},
+      isFormActive: false
     }
   },
+  created() {
+    this.settings = this.userSettings
+  },
   computed: {
-    ...mapState(['currentUser']),
-    firstName() {
-      let str = this.currentUser.displayName
-      return str.substr(0,str.indexOf(' '))
-    }
+    ...mapState(['currentUser', 'userSettings'])
   },
   methods: {
     signIn() {
@@ -53,7 +64,6 @@ export default {
             type: 'is-danger'
           })
         })
-      this.isActive = false
     },
     signOut() {
       firebase
@@ -69,8 +79,18 @@ export default {
             type: 'is-danger'
           })
         })
-      this.isActive = false
     }
   }
 }
 </script>
+
+<style>
+nav {
+  padding: 1em;
+  border-bottom: 1px solid #eee
+}
+.button.is-borderless {
+  border-color: transparent !important;
+  padding-right: 0;
+}
+</style>

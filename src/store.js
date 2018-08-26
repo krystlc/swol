@@ -5,6 +5,13 @@ const fb = require('@/firebaseConfig.js')
 
 Vue.use(Vuex)
 
+const userSettings = {
+  weight: '',
+  sets: 3,
+  reps: 10,
+  suggestions: false
+}
+
 axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
   .then(res => {
     store.commit('setExerciseList', res.data.results)
@@ -33,14 +40,16 @@ fb.auth.onAuthStateChanged(user => {
 
 export const store = new Vuex.Store({
   state: {
+    userSettings,
+    exerciseList: [],
     currentUser: null,
-    userSessions: null,
-    exerciseList: []
+    userSessions: null
   },
   actions: {
     clearData({ commit }) {
       commit('setCurrentUser', null)
       commit('setUserSessions', null)
+      commit('setUserSettings', null)
     }
   },
   mutations: {
@@ -52,6 +61,9 @@ export const store = new Vuex.Store({
     },
     setExerciseList(state, val) {
       state.exerciseList = val
+    },
+    updateUserSettings(state, val) {
+      state.userSettings = val
     }
   }
 })
