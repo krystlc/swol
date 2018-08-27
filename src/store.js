@@ -24,7 +24,7 @@ axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('setCurrentUser', user)
-
+    
     // realtime updates from our posts collection
     fb.sessionCollection.where('uid', '==', store.state.currentUser.uid).limit(5).orderBy('created', 'desc').onSnapshot(querySnapshot => {
       let sessionArray = []
@@ -34,6 +34,9 @@ fb.auth.onAuthStateChanged(user => {
         sessionArray.push(post)
       })
       store.commit('setUserSessions', sessionArray)
+    })
+    fb.userCollection.doc(store.state.currentUser.uid).get().then(doc =>{
+      if (doc.exists) store.commit('setUserSettings', doc.data())
     })
   }
 })
@@ -49,7 +52,17 @@ export const store = new Vuex.Store({
     clearData({ commit }) {
       commit('setCurrentUser', null)
       commit('setUserSessions', null)
-      commit('setUserSettings', null)
+      commit('setUserSettings', userSettings)
+    },
+    saveUserSettings({ state }) {
+      let userDoc = fb.userCollection.doc(state.currentUser.uid)
+      userDoc.get().then(doc => {
+        if (doc.exists) {
+          userDoc.update(state.userSettings)
+        } else {
+          userDoc.set(state.userSettings)
+        }
+      })
     }
   },
   mutations: {
@@ -62,7 +75,7 @@ export const store = new Vuex.Store({
     setExerciseList(state, val) {
       state.exerciseList = val
     },
-    updateUserSettings(state, val) {
+    setUserSettings(state, val) {
       state.userSettings = val
     }
   }

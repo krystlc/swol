@@ -53,17 +53,6 @@ export default {
       keepFirst: true
     }
   },
-  methods: {
-    handleSubmit() {
-      this.$emit('workout', {
-        exercise: this.exercise,
-        weight: this.$refs.weight.value,
-        sets: this.$refs.sets.value,
-        reps: this.$refs.reps.value,
-        resistance: this.resistance
-      })
-    }
-  },
   computed: {
     ...mapState(['currentUser','exerciseList', 'userSettings']),
     filteredDataObj() {
@@ -83,6 +72,17 @@ export default {
         sets: this.userSettings.sets,
         reps: this.userSettings.reps
       }
+    }
+  },
+  methods: {
+    handleSubmit() {
+      this.$emit('workout', {
+        exercise: this.exercise,
+        weight: this.$refs.weight.value,
+        sets: this.$refs.sets.value,
+        reps: this.$refs.reps.value,
+        resistance: this.resistance
+      })
     }
   }
 }

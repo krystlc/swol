@@ -23,6 +23,7 @@ const settings = {
 db.settings(settings)
 
 // firebase collections
+const userCollection = db.collection('users')
 const sessionCollection = db.collection('sessions')
 
 export {
@@ -30,5 +31,6 @@ export {
   auth,
   provider,
   currentUser,
+  userCollection,
   sessionCollection
 }

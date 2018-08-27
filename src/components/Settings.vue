@@ -39,10 +39,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(['userSettings'])
+    ...mapState(['userSettings','currentUser'])
   },
   methods: {
     save() {
+      if (this.currentUser) this.$store.dispatch('saveUserSettings')
       this.$toast.open({
         message: 'Settings saved!',
         type: 'is-success'
