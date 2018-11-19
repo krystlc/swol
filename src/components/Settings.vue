@@ -3,7 +3,10 @@
     <form @submit.prevent="save" action="#" method="post">
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head">
-          <p class="modal-card-title">Settings</p> <button class="button" type="button" @click="isEditing = true">Edit</button>
+          <p class="modal-card-title">Settings</p>
+          <button class="button is-text" type="button" @click="isEditing = true">
+            <b-icon icon="pencil"></b-icon>
+          </button>
         </header>
         <section class="modal-card-body">
           <b-field label="Weight" horizontal>
@@ -39,7 +42,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['userSettings','currentUser'])
+    ...mapState(['userSettings', 'currentUser'])
   },
   methods: {
     save() {
