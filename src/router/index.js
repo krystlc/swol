@@ -17,7 +17,6 @@ const router = new Router({
     },
     {
       path: '/login',
-      name: 'Login',
       component: Login
     },
     {
@@ -29,12 +28,19 @@ const router = new Router({
       }
     },
     {
-      path: '/s/:id',
-      name: 'Session',
+      path: '/new',
       component: Session,
       meta: {
         requiresAuth: true
-      }
+      },
+    },
+    {
+      path: '/s/:id',
+      component: Session,
+      meta: {
+        requiresAuth: true
+      },
+      props: true
     }
   ]
 })

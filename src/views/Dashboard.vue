@@ -1,9 +1,14 @@
 <template>
   <section class="section">
     <div class="container">
-      <h2 class="subtitle">Past Sessions</h2>
-      <b-table :data="data" :columns="columns"></b-table>
-      <span v-if="!userSessions">Empty :(</span>
+      <h2 class="subtitle has-text-centered">My Sessions</h2>
+      <b-table :data="userSessions" :columns="columns" v-if="hasSessions"/>
+      <div class="has-text-centered" v-else>
+        <router-link to="/new" class="button is-outlined is-danger is-rounded">
+          <b-icon icon="plus"></b-icon>
+          <span>Create a new session</span>
+        </router-link>
+      </div>
     </div>
   </section>
 </template>
@@ -14,27 +19,25 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      data: [
-        { 'id': 1, 'date': '2016-10-15 13:43:27' },
-        { 'id': 1, 'date': '2016-10-15 13:43:27' }
-      ],
       columns: [
         {
           field: 'id',
           label: 'ID',
-          width: '40',
-          numeric: true
         },
         {
           field: 'date',
-          label: 'Label',
-          centered: true
+          label: 'Date',
         }
       ]
     }
   },
   computed: {
-    ...mapState(['currentUser','userSessions'])
+    ...mapState(['userSessions']),
+    hasSessions() {
+      if(this.userSessions) {
+        return this.userSessions.length > 0 ? true : false
+      }
+    }
   }
 }
 </script>

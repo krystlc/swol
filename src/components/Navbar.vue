@@ -12,12 +12,9 @@
       </div>
       <div class="level-right" v-if="currentUser">
         <p class="level-item">
-          Hi, {{ currentUser.displayName }}
-        </p>
-        <p class="level-item">
-          <button class="button is-text">
+          <router-link to="/new" class="button is-text has-text-danger">
             <b-icon icon="plus"></b-icon>
-          </button>
+          </router-link>
         </p>
         <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">

@@ -1,5 +1,6 @@
 <template>
   <section class="section">
+    {{ id }}
     <div class="container">
       <b-field grouped>
         <p class="control">
@@ -13,7 +14,11 @@
           </button>
         </p>
       </b-field>
-      <workout-table :data="currentSession" v-if="currentSession.length > 0"/>
+      <workout-table :data="currentSession" v-if="currentSession.length > 0">
+<template slot="bottom-left">
+                        <b>Total checked</b>:
+                    </template>
+      </workout-table>
     </div>
     <b-modal :active.sync="isFormActive" has-modal-card>
       <workout-form @workout="handleWorkout"/>
@@ -27,6 +32,7 @@ import WorkoutTable from '@/components/WorkoutTable'
 import { sessionCollection } from '@/firebaseConfig.js'
 
 export default {
+  props: ['id'],
   components: { WorkoutTable, WorkoutForm },
   data() {
     return {
