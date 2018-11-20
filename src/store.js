@@ -5,7 +5,7 @@ const fb = require('@/firebaseConfig.js')
 
 Vue.use(Vuex)
 
-const userSettings = {
+const defaultSettings = {
   weight: '',
   sets: 3,
   reps: 10,
@@ -36,14 +36,17 @@ fb.auth.onAuthStateChanged(user => {
       store.commit('setUserSessions', sessionArray)
     })
     fb.userCollection.doc(store.state.currentUser.uid).get().then(doc =>{
-      if (doc.exists) store.commit('setUserSettings', doc.data())
+      if (doc.exists) {
+        if (doc.data().settings) store.commit('setUserSettings', doc.data().settings)
+        if (doc.data().sessions) store.commit('setUserSessions', doc.data().sessions)
+      }
     })
   }
 })
 
 export const store = new Vuex.Store({
   state: {
-    userSettings,
+    userSettings: defaultSettings,
     exerciseList: [],
     currentUser: null,
     userSessions: null
@@ -52,15 +55,15 @@ export const store = new Vuex.Store({
     clearData({ commit }) {
       commit('setCurrentUser', null)
       commit('setUserSessions', null)
-      commit('setUserSettings', userSettings)
+      commit('setUserSettings', defaultSettings)
     },
     saveUserSettings({ state }) {
       let userDoc = fb.userCollection.doc(state.currentUser.uid)
       userDoc.get().then(doc => {
         if (doc.exists) {
-          userDoc.update(state.userSettings)
+          userDoc.update({settings: state.userSettings})
         } else {
-          userDoc.set(state.userSettings)
+          userDoc.set({settings: state.userSettings})
         }
       })
     }

@@ -20,14 +20,14 @@
             </b-autocomplete>
           </b-field>
           <b-field label="Weight" class="nums">
-            <b-input type="number" v-model.number="settings.weight" min="0" ref="weight"></b-input>
+            <b-input type="number" v-model.number="userSettings.weight" min="0" ref="weight"></b-input>
           </b-field>
           <b-field grouped class="nums">
             <b-field label="Sets">
-              <b-input type="number" v-model.number="settings.sets" min="1" ref="sets" required></b-input>
+              <b-input type="number" v-model.number="userSettings.sets" min="1" ref="sets" required></b-input>
             </b-field>
             <b-field label="Reps">
-              <b-input type="number" v-model.number="settings.reps" min="1" ref="reps" required></b-input>
+              <b-input type="number" v-model.number="userSettings.reps" min="1" ref="reps" required></b-input>
             </b-field>
           </b-field>
           <b-checkbox v-model="resistance">Resistance band</b-checkbox>
@@ -64,24 +64,18 @@ export default {
             .indexOf(this.exercise.toLowerCase()) >= 0
         )
       })
-    },
-    // load default user settings
-    settings() {
-      return {
-        weight: this.userSettings.weight,
-        sets: this.userSettings.sets,
-        reps: this.userSettings.reps
-      }
     }
   },
   methods: {
     handleSubmit() {
       this.$emit('workout', {
-        exercise: this.exercise,
-        weight: this.$refs.weight.value,
-        sets: this.$refs.sets.value,
-        reps: this.$refs.reps.value,
-        resistance: this.resistance
+        settings: {
+          exercise: this.exercise,
+          weight: this.$refs.weight.value,
+          sets: this.$refs.sets.value,
+          reps: this.$refs.reps.value,
+          resistance: this.resistance
+        }
       })
     }
   }
