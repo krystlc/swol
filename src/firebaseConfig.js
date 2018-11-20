@@ -31,6 +31,7 @@ export {
   db,
   auth,
   provider,
+  firebase,
   currentUser,
   userCollection,
   sessionCollection

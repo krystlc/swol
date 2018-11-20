@@ -25,7 +25,7 @@ export default {
           label: 'ID',
         },
         {
-          field: 'date',
+          field: 'created',
           label: 'Date',
         }
       ]
