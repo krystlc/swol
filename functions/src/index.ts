@@ -22,3 +22,4 @@ exports.addSessionToUserSessions = functions.firestore
       sessions: firestore.FieldValue.arrayUnion(sess)
     })
   })
+  

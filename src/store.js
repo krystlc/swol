@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import router from './router'
-import { firestore, auth, userCollection, sessionCollection } from '@/firebaseConfig'
+import { auth, userCollection, sessionCollection } from '@/firebaseConfig'
 
 Vue.use(Vuex)
 
@@ -38,7 +38,7 @@ export const store = new Vuex.Store({
   state: {
     exerciseList: [],
     currentUser: null,
-    currentSession: null,
+    currentSession: [],
     currentSessionId: null,
     userSessions: [],
     userSettings: defaultSettings
@@ -53,7 +53,7 @@ export const store = new Vuex.Store({
   actions: {
     clearData({commit}) {
       commit('setCurrentUser', null)
-      commit('setCurrentSession', null)
+      commit('setCurrentSession', [])
       commit('setCurrentSessionId', null)
       commit('setUserSessions', [])
       commit('setUserSettings', defaultSettings)
