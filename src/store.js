@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-const fb = require('@/firebaseConfig.js')
+import router from './router'
+import { firestore, auth, userCollection, sessionCollection } from '@/firebaseConfig'
 
 Vue.use(Vuex)
 
@@ -21,21 +22,10 @@ axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
   })
 
 // handle page reload
-fb.auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('setCurrentUser', user)
-    
-    // realtime updates from our posts collection
-    fb.sessionCollection.where('uid', '==', store.state.currentUser.uid).limit(5).orderBy('created', 'desc').onSnapshot(querySnapshot => {
-      let sessionArray = []
-      querySnapshot.forEach(doc => {
-        let post = doc.data()
-        post.id = doc.id
-        sessionArray.push(post)
-      })
-      store.commit('setUserSessions', sessionArray)
-    })
-    fb.userCollection.doc(store.state.currentUser.uid).get().then(doc =>{
+    userCollection.doc(user.uid).get().then(doc =>{
       if (doc.exists) {
         if (doc.data().settings) store.commit('setUserSettings', doc.data().settings)
         if (doc.data().sessions) store.commit('setUserSessions', doc.data().sessions)
@@ -46,31 +36,76 @@ fb.auth.onAuthStateChanged(user => {
 
 export const store = new Vuex.Store({
   state: {
-    userSettings: defaultSettings,
     exerciseList: [],
     currentUser: null,
-    userSessions: null
+    currentSession: null,
+    currentSessionId: null,
+    userSessions: [],
+    userSettings: defaultSettings
+  },
+  getters: {
+    getExerciseList: state => state.exerciseList,
+    getUserSettings: state => state.userSettings,
+    getUserSessions: state => state.userSessions,
+    getCurrentSession: state => state.currentSession,
+    getCurrentSessionId: state => state.currentSessionId
   },
   actions: {
-    clearData({ commit }) {
+    clearData({commit}) {
       commit('setCurrentUser', null)
-      commit('setUserSessions', null)
+      commit('setCurrentSession', null)
+      commit('setCurrentSessionId', null)
+      commit('setUserSessions', [])
       commit('setUserSettings', defaultSettings)
     },
-    saveUserSettings({ state }) {
-      let userDoc = fb.userCollection.doc(state.currentUser.uid)
-      userDoc.get().then(doc => {
-        if (doc.exists) {
-          userDoc.update({settings: state.userSettings})
-        } else {
-          userDoc.set({settings: state.userSettings})
-        }
+    saveUserSettings({state}) {
+      const user = userCollection.doc(state.currentUser.uid)
+      const settings = {settings: state.userSettings}
+      user.get().then(doc => doc.exists ? user.update(settings) : user.set(settings))
+    },
+    createNewSessionId({state, commit}) {
+      const created = new Date()
+      const session = {
+        created,
+        workout: [],
+        uid: state.currentUser.uid
+      }
+      sessionCollection.add(session).then(result => {
+        commit('setCurrentSessionId', result.id)
+      }).catch(err => {
+        alert('someone has to fix this', err)
       })
+    },
+    loadSession({commit}, id) {
+      sessionCollection.doc(id).get().then(session => {
+        if (session.exists) {
+          commit('setCurrentSession', session.data())
+        } else {
+          alert('This session does not exist')
+          router.push('/dashboard')
+        }
+      }).catch(err => {
+        alert('There was an error', err)
+        router.push('/dashboard')
+      })
+    },
+    deleteSession(id) {
+      sessionCollection.doc(id).delete()
+    },
+    addSessionWorkout({commit}, workout) {
+      commit('setSessionWorkout', workout)
     }
   },
   mutations: {
     setCurrentUser(state, val) {
       state.currentUser = val
+    },
+    setCurrentSession(state, val) {
+      state.currentSession = val
+    },
+    setCurrentSessionId(state, val) {
+      state.currentSessionId = val
+      router.push(`/s/${state.currentSessionId}`)
     },
     setUserSessions(state, val) {
       state.userSessions = val
@@ -80,6 +115,9 @@ export const store = new Vuex.Store({
     },
     setUserSettings(state, val) {
       state.userSettings = val
+    },
+    setSessionWorkout(state, val) {
+      state.currentSession.push(val)
     }
   }
 })

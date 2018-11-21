@@ -1,22 +1,62 @@
 <template>
   <section class="section">
     <div class="container">
-      <workout-table :data="currentSession"></workout-table>
+      <h2 class="title">Current Session</h2>
+      <h3 class="subtitle">{{ session.created.seconds | moment("dddd, MMMM Do YYYY")  }}</h3>
+      <b-table :data="session.workout">
+        <template slot-scope="props">
+          <b-table-column field="exercise" label="Exercise">
+            {{ props.row.exercise }}
+          </b-table-column>
+          <b-table-column field="weight" label="Weight" numeric centered width="40">
+            {{ props.row.weight }}<span v-if="props.row.weight">lbs</span>
+          </b-table-column>
+          <b-table-column field="sets" label="Sets" numeric centered width="40">
+            {{ props.row.sets }}
+          </b-table-column>
+          <b-table-column field="reps" label="Reps" numeric centered width="40">
+            {{ props.row.reps }}
+          </b-table-column>
+          <b-table-column field="resistance" label="Resistance" centered width="40">
+            {{ props.row.resistance }}
+          </b-table-column>
+          <b-table-column width="40">
+            <button class="button is-small is-borderless" @click="edit(props)">
+              <b-icon icon="pencil"></b-icon>
+            </button>
+          </b-table-column>
+        </template>
+        <template slot="empty">
+          <section class="section">
+            <div class="content has-text-grey has-text-centered">
+              <p>Empty</p>
+            </div>
+          </section>
+        </template>
+        <template slot="footer">
+          <b-field grouped>
+            <p class="control">
+              <button class="button" @click="isFormActive = true">
+                <b-icon icon="plus"></b-icon>
+                <span>Add workout</span>
+              </button>
+            </p>
+            <p class="control">
+              <button class="button is-primary" @click="this.$store.dispatch('saveSession')">
+                <b-icon icon="check"></b-icon>
+                <span>Save</span>
+              </button>
+            </p>
+            <p class="control">
+              <button class="button is-warning" @click="del">
+                <b-icon icon="delete"></b-icon>
+                <span>Delete</span>
+              </button>
+            </p>
+          </b-field>
+        </template>
+      </b-table>
     </div>
-    <b-field grouped>
-      <p class="control">
-        <button class="button" @click="isFormActive = true">
-          <b-icon icon="plus"></b-icon>
-          <span>Add workout</span>
-        </button>
-      </p>
-      <p class="control">
-        <button class="button is-primary" @click="saveSession" :disabled="currentSession.length > 0 ? false : true">
-          <b-icon icon="content-save-all"></b-icon>
-          <span>Save session</span>
-        </button>
-      </p>
-    </b-field>
     <b-modal :active.sync="isFormActive" has-modal-card>
       <workout-form @workout="handleWorkout"/>
     </b-modal>
@@ -24,55 +64,41 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 import WorkoutForm from '@/components/WorkoutForm'
-import WorkoutTable from '@/components/WorkoutTable'
-import { firebase, sessionCollection, userCollection } from '@/firebaseConfig.js'
 
 export default {
   props: ['id'],
-  components: { WorkoutTable, WorkoutForm },
+  components: { WorkoutForm },
   data() {
     return {
-      currentSession: [],
       isFormActive: false
     }
   },
+  created() {
+    this.$store.dispatch('loadSession', this.id)
+  },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapGetters({
+      session: 'getCurrentSession'
+    })
   },
   methods: {
-    saveSession() {
-      let created = new Date()
-      sessionCollection
-        .add({
-          created,
-          uid: this.currentUser.uid,
-          session: this.currentSession
-        })
-        .then((result) => {
-          this.$toast.open({
-            message: 'Session saved!',
-            type: 'is-success'
-          })
-          userCollection.doc(this.currentUser.uid).update({
-            'sessions': firebase.firestore.FieldValue.arrayUnion({id: result.id, created})
-          })
-          this.currentSession = []
-        })
-        .catch(err => {
-          this.$toast.open({
-            duration: 5000,
-            message: `Oops! ${err.code}. Did you sign in?`,
-            type: 'is-danger'
-          })
-        })
-    },
-    handleWorkout: function(payload) {
-      this.currentSession.push(payload)
+    handleWorkout(payload) {
+      this.$store.dispatch('addSessionWorkout', payload)
       this.$toast.open({
         message: 'Nice, keep going!',
         type: 'is-success'
+      })
+    },
+    edit(row) {
+      alert('hi', row.index)
+    },
+    del() {
+      this.$store.dispatch('deleteSession', this.id).then(() => {
+        this.$router.push('/dashboard')
+      }).catch(() => {
+        console.log('did not work', err)
       })
     }
   }

@@ -1,42 +1,43 @@
 <template>
   <section class="section">
     <div class="container">
-      <h2 class="subtitle has-text-centered">My Sessions</h2>
-      <b-table :data="userSessions" :columns="columns" v-if="hasSessions"/>
-      <div class="has-text-centered" v-else>
-        <router-link to="/new" class="button is-outlined is-danger is-rounded">
-          <b-icon icon="plus"></b-icon>
-          <span>Create a new session</span>
-        </router-link>
-      </div>
+      <h2 class="subtitle">My Sessions</h2>
+      <b-table :data="sessions" @click="selected" striped hoverable>
+        <template slot-scope="props">
+          <b-table-column field="created" label="Date" sortable>
+            <h5 class="is-size-5">{{ props.row.created.seconds | moment("dddd") }}</h5>
+            <span class="is-size-7 has-text-grey is-uppercase">{{ props.row.created.seconds | moment("MMMM Do YYYY, h:mm a") }}</span>
+          </b-table-column>
+          <b-table-column field="workout" label="Workout">
+            <span v-for="(exercise, i) in props.row.workout" :key="i">{{ exercise }}</span>
+          </b-table-column>
+        </template>
+        <template slot="footer">
+          <div>
+            <create-session-btn>
+              <span>Create a new session</span>
+            </create-session-btn>
+          </div>
+        </template>
+      </b-table>
     </div>
   </section>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
+import CreateSessionBtn from '@/components/CreateSessionBtn'
 
 export default {
-  data() {
-    return {
-      columns: [
-        {
-          field: 'id',
-          label: 'ID',
-        },
-        {
-          field: 'created',
-          label: 'Date',
-        }
-      ]
-    }
-  },
+  components: { CreateSessionBtn },
   computed: {
-    ...mapState(['userSessions']),
-    hasSessions() {
-      if(this.userSessions) {
-        return this.userSessions.length > 0 ? true : false
-      }
+    ...mapGetters({
+      sessions: 'getUserSessions'
+    })
+  },
+  methods: {
+    selected(item) {
+      this.$router.push(`/s/${item.id}`)
     }
   }
 }

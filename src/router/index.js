@@ -28,13 +28,6 @@ const router = new Router({
       }
     },
     {
-      path: '/new',
-      component: Session,
-      meta: {
-        requiresAuth: true
-      },
-    },
-    {
       path: '/s/:id',
       component: Session,
       meta: {

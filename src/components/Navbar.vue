@@ -12,9 +12,7 @@
       </div>
       <div class="level-right" v-if="currentUser">
         <p class="level-item">
-          <router-link to="/new" class="button is-text has-text-danger">
-            <b-icon icon="plus"></b-icon>
-          </router-link>
+          <create-session-btn />
         </p>
         <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">
@@ -22,12 +20,12 @@
           </button>
         </p>
         <p class="level-item">
-          <button class="button is-light" @click.prevent="signOut">
+          <button class="button" @click.prevent="signOut">
             Logout
           </button>
         </p>
       <b-modal :active.sync="isFormActive" has-modal-card>
-        <settings></settings>
+        <settings/>
       </b-modal>
       </div>
     </div>
@@ -37,21 +35,18 @@
 <script>
 import { mapState } from 'vuex'
 import Settings from '@/components/Settings'
+import CreateSessionBtn from '@/components/CreateSessionBtn'
 import { auth } from '@/firebaseConfig'
 
 export default {
-  components: { Settings },
+  components: { Settings, CreateSessionBtn },
   data() {
     return {
-      settings: {},
       isFormActive: false
     }
   },
-  created() {
-    this.settings = this.userSettings
-  },
   computed: {
-    ...mapState(['currentUser', 'userSettings'])
+    ...mapState(['currentUser'])
   },
   methods: {
     signOut() {

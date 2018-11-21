@@ -69,13 +69,11 @@ export default {
   methods: {
     handleSubmit() {
       this.$emit('workout', {
-        settings: {
-          exercise: this.exercise,
-          weight: this.$refs.weight.value,
-          sets: this.$refs.sets.value,
-          reps: this.$refs.reps.value,
-          resistance: this.resistance
-        }
+        exercise: this.exercise,
+        weight: this.$refs.weight.value,
+        sets: this.$refs.sets.value,
+        reps: this.$refs.reps.value,
+        resistance: this.resistance
       })
     }
   }

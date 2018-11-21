@@ -1,0 +1,18 @@
+{
+  "indexes": [
+    {
+      "collectionId": "sessions",
+      "state": "READY",
+      "fields": [
+        {
+          "fieldPath": "uid",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "created",
+          "mode": "DESCENDING"
+        }
+      ]
+    }
+  ]
+}
