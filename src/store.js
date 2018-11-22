@@ -25,7 +25,7 @@ axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
 auth.onAuthStateChanged(user => {
   if (user) {
     store.commit('setCurrentUser', user)
-    userCollection.doc(user.uid).get().then(doc =>{
+    userCollection.doc(user.uid).onSnapshot(doc => {
       if (doc.exists) {
         if (doc.data().settings) store.commit('setUserSettings', doc.data().settings)
         if (doc.data().sessions) store.commit('setUserSessions', doc.data().sessions)
@@ -89,8 +89,9 @@ export const store = new Vuex.Store({
         router.push('/dashboard')
       })
     },
-    deleteSession(id) {
+    deleteSession({commit}, id) {
       sessionCollection.doc(id).delete()
+      commit('setCurrentSessionId', null)
     },
     addSessionWorkout({commit}, workout) {
       commit('setSessionWorkout', workout)

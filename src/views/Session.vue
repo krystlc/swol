@@ -41,13 +41,7 @@
               </button>
             </p>
             <p class="control">
-              <button class="button is-primary" @click="this.$store.dispatch('saveSession')">
-                <b-icon icon="check"></b-icon>
-                <span>Save</span>
-              </button>
-            </p>
-            <p class="control">
-              <button class="button is-warning" @click="del()">
+              <button class="button is-warning" @click="del">
                 <b-icon icon="delete"></b-icon>
                 <span>Delete</span>
               </button>
@@ -94,11 +88,8 @@ export default {
       alert('hi', row.index)
     },
     del() {
-      this.$store.dispatch('deleteSession', this.id).then(() => {
-        this.$router.push('/dashboard')
-      }).catch(() => {
-        alert('did not work')
-      })
+      this.$store.dispatch('deleteSession', this.id)
+      this.$router.push('/dashboard')
     }
   }
 }

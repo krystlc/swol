@@ -1,5 +1,7 @@
 import * as functions from 'firebase-functions'
-import { firestore } from 'firebase-admin'
+import * as admin from 'firebase-admin'
+admin.initializeApp(functions.config().firebase)
+admin.firestore().settings({timestampsInSnapshots: true})
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -15,11 +17,25 @@ exports.addSessionToUserSessions = functions.firestore
     const workout = 'almost there'
     const uid = snap.data().uid
 
-    const sess = {id, created, workout}
-    const sessionRef = firestore().collection('users').doc(uid)
+    const session = { id, created, workout }
+    const userRef = admin.firestore().collection('users').doc(uid)
 
-    return sessionRef.update({
-      sessions: firestore.FieldValue.arrayUnion(sess)
+    return userRef.update({
+      sessions: admin.firestore.FieldValue.arrayUnion(session)
     })
   })
-  
+
+exports.deleteSessionFromUserSessions = functions.firestore
+  .document('sessions/{sessionId}')
+  .onDelete((snap, context) => {
+    const id = context.params.sessionId
+    const uid = snap.data().uid
+
+    const userRef = admin.firestore().collection('users').doc(uid)
+
+    return userRef.get().then(user => {
+      return userRef.update({
+        sessions: user.data().sessions.filter(sess => sess.id !== id)
+      })
+    })
+  })
