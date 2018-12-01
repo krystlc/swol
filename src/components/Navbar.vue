@@ -12,10 +12,7 @@
       </div>
       <div class="level-right" v-if="getUserId">
         <p class="level-item">
-          <button class="button is-primary" @click="create">
-            <b-icon icon="plus"></b-icon>
-            <slot></slot>
-          </button>
+          <create-btn></create-btn>
         </p>
         <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">
@@ -38,11 +35,10 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import SettingsForm from '@/components/SettingsForm'
-import CreateSession from '@/mixins/CreateSessionMixin'
+import CreateBtn from '@/components/CreateSessionBtn'
 
 export default {
-  mixins: [CreateSession],
-  components: { SettingsForm },
+  components: { SettingsForm, CreateBtn },
   data() {
     return {
       isFormActive: false

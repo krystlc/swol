@@ -31,10 +31,8 @@ exports.updateSessionToUserSessions = functions.firestore
 
     return userRef.get().then(user => {
       const sessions = user.data().sessions
-      console.log(`SESSIONS: ${sessions}`)
       for (const i in sessions) {
         if (sessions[i].id === id) {
-          console.log(`SESS IN QUESTION: ${sessions[i]}`)
           sessions[i].workout = exercises
         }
       }

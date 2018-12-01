@@ -21,6 +21,13 @@
             </div>
           </section>
         </template>
+        <template slot="footer">
+          <div>
+            <create-btn>
+              <span>Create a new session</span>
+            </create-btn>
+          </div>
+        </template>
       </b-table>
     </div>
   </section>
@@ -28,10 +35,12 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import CreateBtn from '@/components/CreateSessionBtn'
 
 export default {
+  components: { CreateBtn },
   computed: {
-    ...mapGetters(['getSessions' ,'getUserId'])
+    ...mapGetters(['getSessions','getUserId'])
   },
   methods: {
     selected(item) {

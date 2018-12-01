@@ -6,26 +6,12 @@ import * as fb from '@/firebaseConfig'
 
 Vue.use(Vuex)
 
-// handle page reload
-/*
 fb.auth.onAuthStateChanged(user => {
   if (user) {
-    fb.userCollection.doc(user.uid).onSnapshot(doc => {
-      store.commit('setUser', doc.data())
-    })
-    store.dispatch('loadUser')
-    store.dispatch('loadExerciseList')
-  } else {
-    console.log('no user')
-  }
-})
-*/
-fb.auth.onAuthStateChanged(user => {
-  if(user) {
     store.commit('setUser', user.uid)
     store.dispatch('loadExerciseList')
     fb.userCollection.doc(user.uid).onSnapshot(doc => {
-      if(doc.exists) {
+      if (doc.exists) {
         const sessions = doc.data().sessions
         const settings = doc.data().settings
         if(sessions) store.commit('setSessions', sessions)
