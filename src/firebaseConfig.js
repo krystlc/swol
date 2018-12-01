@@ -13,7 +13,7 @@ firebase.initializeApp(config)
 
 // firebase utils
 const db = firebase.firestore()
-const firestore = firebase.firestore
+const fieldValue = firebase.firestore.FieldValue
 
 const auth = firebase.auth()
 const provider = new firebase.auth.GoogleAuthProvider()
@@ -33,7 +33,7 @@ export {
   db,
   auth,
   provider,
-  firestore,
+  fieldValue,
   currentUser,
   userCollection,
   sessionCollection

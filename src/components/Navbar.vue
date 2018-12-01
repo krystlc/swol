@@ -10,9 +10,12 @@
           </p>
         </div>
       </div>
-      <div class="level-right" v-if="currentUser">
+      <div class="level-right" v-if="getUserId">
         <p class="level-item">
-          <create-session-btn />
+          <button class="button is-primary" @click="create">
+            <b-icon icon="plus"></b-icon>
+            <slot></slot>
+          </button>
         </p>
         <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">
@@ -25,7 +28,7 @@
           </button>
         </p>
       <b-modal :active.sync="isFormActive" has-modal-card>
-        <settings/>
+        <settings-form></settings-form>
       </b-modal>
       </div>
     </div>
@@ -33,26 +36,27 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import Settings from '@/components/Settings'
-import CreateSessionBtn from '@/components/CreateSessionBtn'
+import { mapGetters } from 'vuex'
 import { auth } from '@/firebaseConfig'
+import SettingsForm from '@/components/SettingsForm'
+import CreateSession from '@/mixins/CreateSessionMixin'
 
 export default {
-  components: { Settings, CreateSessionBtn },
+  mixins: [CreateSession],
+  components: { SettingsForm },
   data() {
     return {
       isFormActive: false
     }
   },
   computed: {
-    ...mapState(['currentUser'])
+    ...mapGetters(['getUserId'])
   },
   methods: {
     signOut() {
       auth.signOut()
         .then(() => {
-          this.$store.dispatch('clearData')
+          // TODO: Probably should scrub user data after signing out
           this.$router.push('/login')
         })
         .catch(err => {

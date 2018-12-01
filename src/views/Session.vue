@@ -2,8 +2,8 @@
   <section class="section">
     <div class="container">
       <h2 class="title">Current Session</h2>
-      <h3 class="subtitle">{{ session.created.seconds | moment("dddd, MMMM Do YYYY")}}</h3>
-      <b-table :data="session.workout">
+      <h3 class="subtitle" v-if="session">{{ session.created.seconds | moment("dddd, MMMM Do YYYY")}}</h3>
+      <b-table :data="session.workout" v-if="session">
         <template slot-scope="props">
           <b-table-column field="exercise" label="Exercise">
             {{ props.row.exercise }}
@@ -21,7 +21,7 @@
             {{ props.row.resistance }}
           </b-table-column>
           <b-table-column width="40">
-            <button class="button is-small is-borderless" @click="edit(props)">
+            <button class="button is-small is-borderless" @click="editWorkout(props.row)">
               <b-icon icon="pencil"></b-icon>
             </button>
           </b-table-column>
@@ -36,7 +36,7 @@
         <template slot="footer">
           <b-field grouped>
             <p class="control">
-              <button class="button" @click="isFormActive = true">
+              <button class="button" @click="addWorkout">
                 <b-icon icon="plus"></b-icon>
                 <span>Add workout</span>
               </button>
@@ -52,7 +52,7 @@
       </b-table>
     </div>
     <b-modal :active.sync="isFormActive" has-modal-card>
-      <workout-form @workout="handleWorkout"/>
+      <workout-form :id="id" :row="row"></workout-form>
     </b-modal>
   </section>
 </template>
@@ -66,7 +66,8 @@ export default {
   components: { WorkoutForm },
   data() {
     return {
-      session: [],
+      row: null,
+      session: null,
       isFormActive: false
     }
   },
@@ -76,23 +77,23 @@ export default {
     })
   },
   methods: {
-    handleWorkout(payload) {
-      this.$store.dispatch('addSessionWorkout', payload)
-      this.$toast.open({
-        message: 'Nice, keep going!',
-        type: 'is-success'
-      })
+    addWorkout() {
+      this.row = null
+      this.isFormActive = true
     },
-    edit(row) {
-      alert('hi', row.index)
+    editWorkout(row) {
+      if(!row.start) return
+      this.row = row
+      this.isFormActive = true
     },
     deleteSession() {
       sessionCollection.doc(this.id).delete().then(() => {
         this.$router.push('/dashboard')
       }).catch(() => {
+        // TODO: Replace with a toast message
         alert('looks like there was an error')
       })
-    }
+    },
   }
 }
 </script>

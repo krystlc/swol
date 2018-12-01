@@ -2,7 +2,7 @@
   <section class="section">
     <div class="container">
       <h2 class="subtitle">My Sessions</h2>
-      <b-table :data="sessions" @click="selected" striped hoverable>
+      <b-table :data="getSessions" @click="selected" striped hoverable>
         <template slot-scope="props">
           <b-table-column field="created" label="Date" sortable>
             <h5 class="is-size-5">{{ props.row.created.seconds | moment("dddd") }}</h5>
@@ -14,9 +14,10 @@
         </template>
         <template slot="footer">
           <div>
-            <create-session-btn>
+            <button class="button is-primary" @click="create">
+              <b-icon icon="plus"></b-icon>
               <span>Create a new session</span>
-            </create-session-btn>
+            </button>
           </div>
         </template>
       </b-table>
@@ -26,19 +27,17 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CreateSessionBtn from '@/components/CreateSessionBtn'
+import CreateSession from '@/mixins/CreateSessionMixin'
 
 export default {
-  components: { CreateSessionBtn },
+  mixins: [CreateSession],
   computed: {
-    ...mapGetters({
-      sessions: 'getUserSessions'
-    })
+    ...mapGetters(['getSessions','getUserId'])
   },
   methods: {
     selected(item) {
       this.$router.push(`/s/${item.id}`)
-    }
+    },
   }
 }
 </script>

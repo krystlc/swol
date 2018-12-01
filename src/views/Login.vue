@@ -17,8 +17,7 @@ export default {
   methods: {
     signIn() {
       auth.signInWithPopup(provider)
-        .then(result => {
-          this.$store.commit('setCurrentUser', result.user)
+        .then(() => {
           this.$router.push('/dashboard')
         })
         .catch(err => {
