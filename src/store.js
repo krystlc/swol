@@ -23,6 +23,7 @@ fb.auth.onAuthStateChanged(user => {
 fb.auth.onAuthStateChanged(user => {
   if(user) {
     store.commit('setUser', user.uid)
+    store.dispatch('loadExerciseList')
     fb.userCollection.doc(user.uid).onSnapshot(doc => {
       if(doc.exists) {
         const sessions = doc.data().sessions

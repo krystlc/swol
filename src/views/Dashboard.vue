@@ -9,7 +9,9 @@
             <span class="is-size-7 has-text-grey is-uppercase">{{ props.row.created.seconds | moment("MMMM Do YYYY, h:mm a") }}</span>
           </b-table-column>
           <b-table-column field="workout" label="Workout">
-            <span v-for="(exercise, i) in props.row.workout" :key="i">{{ exercise }}</span>
+            <div class="tags">
+              <b-tag v-for="(exercise, i) in props.row.workout" :key="i">{{ exercise }}</b-tag>
+            </div>
           </b-table-column>
         </template>
         <template slot="empty">
@@ -19,14 +21,6 @@
             </div>
           </section>
         </template>
-        <template slot="footer">
-          <div>
-            <button class="button is-primary" @click="create">
-              <b-icon icon="plus"></b-icon>
-              <span>Create a new session</span>
-            </button>
-          </div>
-        </template>
       </b-table>
     </div>
   </section>
@@ -34,10 +28,8 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CreateSession from '@/mixins/CreateSessionMixin'
 
 export default {
-  mixins: [CreateSession],
   computed: {
     ...mapGetters(['getSessions' ,'getUserId'])
   },

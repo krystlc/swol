@@ -1,21 +1,15 @@
 import * as functions from 'firebase-functions'
 import * as admin from 'firebase-admin'
 admin.initializeApp(functions.config().firebase)
-admin.firestore().settings({timestampsInSnapshots: true})
+admin.firestore().settings({ timestampsInSnapshots: true })
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//  response.send("Hello from Firebase!");
-// });
 exports.addSessionToUserSessions = functions.firestore
   .document('sessions/{sessionId}')
   .onCreate((snap, context) => {
+    const uid = snap.data().uid
     const id = context.params.sessionId
     const created = snap.data().created
-    const workout = 'almost there'
-    const uid = snap.data().uid
+    const workout = []
 
     const session = { id, created, workout }
     const userRef = admin.firestore().collection('users').doc(uid)
@@ -25,11 +19,34 @@ exports.addSessionToUserSessions = functions.firestore
     })
   })
 
+exports.updateSessionToUserSessions = functions.firestore
+  .document('sessions/{sessionId}')
+  .onUpdate((change, context) => {
+    const uid = change.before.data().uid
+    const id = context.params.sessionId
+    const newWorkout = change.after.data().workout
+    const exercises = newWorkout.map(w => w.exercise)
+    
+    const userRef = admin.firestore().collection('users').doc(uid)
+
+    return userRef.get().then(user => {
+      const sessions = user.data().sessions
+      console.log(`SESSIONS: ${sessions}`)
+      for (const i in sessions) {
+        if (sessions[i].id === id) {
+          console.log(`SESS IN QUESTION: ${sessions[i]}`)
+          sessions[i].workout = exercises
+        }
+      }
+      return userRef.update({sessions})
+    })
+  })
+
 exports.deleteSessionFromUserSessions = functions.firestore
   .document('sessions/{sessionId}')
   .onDelete((snap, context) => {
-    const id = context.params.sessionId
     const uid = snap.data().uid
+    const id = context.params.sessionId
 
     const userRef = admin.firestore().collection('users').doc(uid)
 
