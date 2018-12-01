@@ -14,6 +14,9 @@
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  mounted() {
+    if(this.getUserId) this.$router.push('/dashboard')
+  },
   computed: {
     ...mapGetters(['getUserId'])
   },

@@ -22,11 +22,18 @@ fb.auth.onAuthStateChanged(user => {
 */
 fb.auth.onAuthStateChanged(user => {
   if(user) {
-    store.commit('setUser', {id: user.uid})
+    store.commit('setUser', user.uid)
+    fb.userCollection.doc(user.uid).onSnapshot(doc => {
+      if(doc.exists) {
+        const sessions = doc.data().sessions
+        const settings = doc.data().settings
+        if(sessions) store.commit('setSessions', sessions)
+        if(settings) store.commit('setSettings', settings)
+      }
+    })
   }
 })
 
-// TODO: this could be somewhere nicer
 const defaultSettings = {
   weight: '',
   sets: 3,
@@ -37,37 +44,38 @@ const defaultSettings = {
 export const store = new Vuex.Store({
   state: {
     user: null,
+    sessions: [],
+    settings: defaultSettings,
     exerciseList: []
   },
   getters: {
-    getUserId: state => state.user ? state.user.id : null,
-    getSettings: state => state.user ? state.user.settings : defaultSettings,
-    getSessions: state => state.user ? state.user.sessions : null,
+    getUserId: state => state.user,
+    getSettings: state => state.settings,
+    getSessions: state => state.sessions,
     getExerciseList: state => state.exerciseList
   },
   actions: {
     signIn({commit}) {
       fb.auth.signInWithPopup(fb.provider)
         .then(res => {
-          commit('setUser', {id: res.user.uid})
+          commit('setUser', res.user.uid)
           router.push('/dashboard')
         })
         .catch(err => {
           alert(`Oops! ${err}`)
         })
     },
-    signOut({dispatch}) {
-      router.push('/login')
+    signOut({commit}) {
       fb.auth.signOut()
         .then(() => {
-          dispatch('clearUser')
+          commit('setUser', null)
+          commit('setSessions', [])
+          commit('setSettings', defaultSettings)
+          router.push('/login')
         })
         .catch(err => {
           alert(`Oops! ${err}`)
         })
-    },
-    loadUser({commit}, user) {
-      console.log('i guess i will reload the user?')
     },
     loadExerciseList({commit}) {
       axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
@@ -77,15 +85,17 @@ export const store = new Vuex.Store({
         .catch(err => {
           alert(`fetching exercise data failed: ${err}`)
         })
-    },
-    clearUser({commit}) {
-      // TODO: should clean sessions and settings too
-      commit('setUser', null)
     }
   },
   mutations: {
     setUser(state, user) {
       state.user = user
+    },
+    setSessions(state, sessions) {
+      state.sessions = sessions
+    },
+    setSettings(state, settings) {
+      state.settings = settings
     },
     setExerciseList(state, list) {
       state.exerciseList = list

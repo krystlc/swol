@@ -1,9 +1,11 @@
 <template>
   <section class="section">
     <div class="container">
-      <h2 class="title">Current Session</h2>
-      <h3 class="subtitle" v-if="session">{{ session.created.seconds | moment("dddd, MMMM Do YYYY")}}</h3>
-      <b-table :data="session.workout" v-if="session">
+      <template v-if="sessionDate">
+        <h2 class="title">{{ sessionDate | moment("dddd")}}</h2>
+        <h3 class="subtitle">{{ sessionDate | moment("MMMM Do YYYY")}}</h3>
+      </template>
+      <b-table :data="session ? session.workout : []">
         <template slot-scope="props">
           <b-table-column field="exercise" label="Exercise">
             {{ props.row.exercise }}
@@ -75,6 +77,11 @@ export default {
     sessionCollection.doc(this.id).onSnapshot(doc => {
       this.session = doc.data()
     })
+  },
+  computed: {
+    sessionDate() {
+      if (this.session) return this.session.created.seconds
+    }
   },
   methods: {
     addWorkout() {
