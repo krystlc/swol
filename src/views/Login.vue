@@ -3,31 +3,22 @@
     <div class="hero-body has-text-centered">
       <h1 class="title">Get SWOL</h1>
       <h2 class="subtitle">and log those gains</h2>
-      <a class="button is-info is-medium is-outlined" @click.prevent="signIn">
+      <button class="button is-info is-outlined" @click.prevent="signIn">
         <span>Sign in</span>
-      </a>
+      </button>
     </div>
   </section>
 </template>
 
 <script>
-import { auth, provider } from '@/firebaseConfig'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
+  computed: {
+    ...mapGetters(['getUserId'])
+  },
   methods: {
-    signIn() {
-      auth.signInWithPopup(provider)
-        .then(() => {
-          this.$router.push('/dashboard')
-        })
-        .catch(err => {
-          this.$toast.open({
-            duration: 5000,
-            message: `Oops! ${err}`,
-            type: 'is-danger'
-          })
-        })
-    }
+    ...mapActions(['signIn'])
   }
 }
 </script>

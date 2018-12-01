@@ -36,8 +36,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { auth } from '@/firebaseConfig'
+import { mapGetters, mapActions } from 'vuex'
 import SettingsForm from '@/components/SettingsForm'
 import CreateSession from '@/mixins/CreateSessionMixin'
 
@@ -53,20 +52,7 @@ export default {
     ...mapGetters(['getUserId'])
   },
   methods: {
-    signOut() {
-      auth.signOut()
-        .then(() => {
-          // TODO: Probably should scrub user data after signing out
-          this.$router.push('/login')
-        })
-        .catch(err => {
-          this.$toast.open({
-            duration: 5000,
-            message: `Oops! ${err.code}. Did you sign in?`,
-            type: 'is-danger'
-          })
-        })
-    }
+    ...mapActions(['signOut'])
   }
 }
 </script>
