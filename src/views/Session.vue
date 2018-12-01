@@ -2,6 +2,7 @@
   <section class="section">
     <div class="container">
       <h2 class="title">Current Session</h2>
+      <h3 class="subtitle">{{ session.created.seconds | moment("dddd, MMMM Do YYYY")}}</h3>
       <b-table :data="session.workout">
         <template slot-scope="props">
           <b-table-column field="exercise" label="Exercise">
@@ -41,7 +42,7 @@
               </button>
             </p>
             <p class="control">
-              <button class="button is-warning" @click="del">
+              <button class="button is-warning" @click="deleteSession">
                 <b-icon icon="delete"></b-icon>
                 <span>Delete</span>
               </button>
@@ -57,7 +58,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { sessionCollection } from '@/firebaseConfig'
 import WorkoutForm from '@/components/WorkoutForm'
 
 export default {
@@ -65,15 +66,13 @@ export default {
   components: { WorkoutForm },
   data() {
     return {
+      session: [],
       isFormActive: false
     }
   },
   created() {
-    this.$store.dispatch('loadSession', this.id)
-  },
-  computed: {
-    ...mapGetters({
-      session: 'getCurrentSession'
+    sessionCollection.doc(this.id).onSnapshot(doc => {
+      this.session = doc.data()
     })
   },
   methods: {
@@ -87,9 +86,12 @@ export default {
     edit(row) {
       alert('hi', row.index)
     },
-    del() {
-      this.$store.dispatch('deleteSession', this.id)
-      this.$router.push('/dashboard')
+    deleteSession() {
+      sessionCollection.doc(this.id).delete().then(() => {
+        this.$router.push('/dashboard')
+      }).catch(() => {
+        alert('looks like there was an error')
+      })
     }
   }
 }

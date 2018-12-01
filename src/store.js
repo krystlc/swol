@@ -6,6 +6,7 @@ import { auth, userCollection, sessionCollection } from '@/firebaseConfig'
 
 Vue.use(Vuex)
 
+// TODO: This could be inside the `setUserSettings` mutation logic instead
 const defaultSettings = {
   weight: '',
   sets: 3,
@@ -13,6 +14,7 @@ const defaultSettings = {
   suggestions: false
 }
 
+// TODO: This could be an action function
 axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
   .then(res => {
     store.commit('setExerciseList', res.data.results)
@@ -39,7 +41,6 @@ export const store = new Vuex.Store({
     exerciseList: [],
     currentUser: null,
     currentSession: [],
-    currentSessionId: null,
     userSessions: [],
     userSettings: defaultSettings
   },
@@ -48,13 +49,12 @@ export const store = new Vuex.Store({
     getUserSettings: state => state.userSettings,
     getUserSessions: state => state.userSessions,
     getCurrentSession: state => state.currentSession,
-    getCurrentSessionId: state => state.currentSessionId
+    getUserId: state => state.currentUser.uid
   },
   actions: {
     clearData({commit}) {
       commit('setCurrentUser', null)
       commit('setCurrentSession', [])
-      commit('setCurrentSessionId', null)
       commit('setUserSessions', [])
       commit('setUserSettings', defaultSettings)
     },
@@ -62,19 +62,6 @@ export const store = new Vuex.Store({
       const user = userCollection.doc(state.currentUser.uid)
       const settings = {settings: state.userSettings}
       user.get().then(doc => doc.exists ? user.update(settings) : user.set(settings))
-    },
-    createNewSessionId({state, commit}) {
-      const created = new Date()
-      const session = {
-        created,
-        workout: [],
-        uid: state.currentUser.uid
-      }
-      sessionCollection.add(session).then(result => {
-        commit('setCurrentSessionId', result.id)
-      }).catch(err => {
-        alert('someone has to fix this', err)
-      })
     },
     loadSession({commit}, id) {
       sessionCollection.doc(id).get().then(session => {
@@ -89,10 +76,6 @@ export const store = new Vuex.Store({
         router.push('/dashboard')
       })
     },
-    deleteSession({commit}, id) {
-      sessionCollection.doc(id).delete()
-      commit('setCurrentSessionId', null)
-    },
     addSessionWorkout({commit}, workout) {
       commit('setSessionWorkout', workout)
     }
@@ -103,10 +86,6 @@ export const store = new Vuex.Store({
     },
     setCurrentSession(state, val) {
       state.currentSession = val
-    },
-    setCurrentSessionId(state, val) {
-      state.currentSessionId = val
-      router.push(`/s/${state.currentSessionId}`)
     },
     setUserSessions(state, val) {
       state.userSessions = val
