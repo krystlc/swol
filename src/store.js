@@ -16,6 +16,11 @@ fb.auth.onAuthStateChanged(user => {
         const settings = doc.data().settings
         if(sessions) store.commit('setSessions', sessions)
         if(settings) store.commit('setSettings', settings)
+      } else {
+        fb.userCollection.doc(user.uid).set({
+          settings: null,
+          sessions: null
+        })
       }
     })
   }
