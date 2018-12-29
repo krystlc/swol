@@ -12,9 +12,6 @@
       </div>
       <div class="level-right" v-if="getUserId">
         <p class="level-item">
-          <create-btn></create-btn>
-        </p>
-        <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">
             <b-icon icon="settings"></b-icon>
           </button>
@@ -35,10 +32,9 @@
 <script>
 import { mapGetters, mapActions } from 'vuex'
 import SettingsForm from '@/components/SettingsForm'
-import CreateBtn from '@/components/CreateSessionBtn'
 
 export default {
-  components: { SettingsForm, CreateBtn },
+  components: { SettingsForm },
   data() {
     return {
       isFormActive: false

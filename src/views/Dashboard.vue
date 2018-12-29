@@ -1,10 +1,19 @@
 <template>
   <section class="section">
     <div class="container">
-      <h2 class="title">My Sessions</h2>
-      <b-table :data="getSessions" @click="selected" striped hoverable>
+      <div class="level">
+        <div class="level-left">
+          <h2 class="title">My Sessions</h2>
+        </div>
+        <div class="level-right">
+          <create-btn>
+            <span>Create a new session</span>
+          </create-btn>
+        </div>
+      </div>
+      <b-table :data="getSessions" @click="selected" paginated striped hoverable per-page="7" default-sort="created.seconds" default-sort-direction="desc">
         <template slot-scope="props">
-          <b-table-column field="created" label="Date" sortable>
+          <b-table-column field="created.seconds" label="Date" sortable width="240">
             <h5 class="is-size-5">{{ props.row.created.seconds | moment("dddd") }}</h5>
             <span class="is-size-7 has-text-grey is-uppercase">{{ props.row.created.seconds | moment("MMMM Do YYYY, h:mm a") }}</span>
           </b-table-column>
@@ -20,13 +29,6 @@
               <p>Empty</p>
             </div>
           </section>
-        </template>
-        <template slot="footer">
-          <div>
-            <create-btn>
-              <span>Create a new session</span>
-            </create-btn>
-          </div>
         </template>
       </b-table>
     </div>
