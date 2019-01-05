@@ -1,23 +1,41 @@
 <template>
   <section class="section">
     <div class="container">
-      <template v-if="sessionDate">
-        <h2 class="title">{{ sessionDate | moment("dddd")}}</h2>
-        <h3 class="subtitle">{{ sessionDate | moment("MMMM Do YYYY")}}</h3>
-      </template>
-      <b-table :data="session ? session.workout : []">
+      <div class="level" v-if="sessionDate">
+        <div class="level-left">
+          <h2 class="title level-item">{{ sessionDate | moment("dddd")}}</h2>
+          <h3 class="subtitle level-item">{{ sessionDate | moment("MMMM Do YYYY")}}</h3>
+        </div>
+        <div class="level-right">
+          <div class="level-item">
+            <b-field grouped>
+              <p class="control">
+                <button class="button" @click="addWorkout">
+                  <b-icon icon="plus"></b-icon>
+                  <span>Add workout</span>
+                </button>
+              </p>
+              <p class="control">
+                <button class="button is-danger" @click="deleteSession">
+                  <b-icon icon="delete"></b-icon>
+                </button>
+              </p>
+            </b-field>
+          </div>
+        </div>
+      </div>
+      <b-table :data="session ? session.workout : []" narrowed hoverable>
         <template slot-scope="props">
           <b-table-column field="exercise" label="Exercise">
             {{ props.row.exercise }}
           </b-table-column>
-          <b-table-column field="weight" label="Weight" numeric centered width="40">
-            {{ props.row.weight }}<span v-if="props.row.weight">lbs</span>
-          </b-table-column>
-          <b-table-column field="sets" label="Sets" numeric centered width="40">
-            {{ props.row.sets }}
-          </b-table-column>
-          <b-table-column field="reps" label="Reps" numeric centered width="40">
-            {{ props.row.reps }}
+          <b-table-column field="sets" label="Sets">
+            <p v-if="props.row.weight">
+              {{ props.row.weight }} lbs
+            </p>
+            <p v-for="(set, i) in props.row.sets" :key="i" v-else>
+              <span>{{ set.weight }} lbs</span> / <span>{{ set.reps }} reps</span>
+            </p>
           </b-table-column>
           <b-table-column field="resistance" label="Resistance" centered width="40">
             {{ props.row.resistance }}
@@ -34,22 +52,6 @@
               <p>Empty</p>
             </div>
           </section>
-        </template>
-        <template slot="footer">
-          <b-field grouped>
-            <p class="control">
-              <button class="button" @click="addWorkout">
-                <b-icon icon="plus"></b-icon>
-                <span>Add workout</span>
-              </button>
-            </p>
-            <p class="control">
-              <button class="button is-warning" @click="deleteSession">
-                <b-icon icon="delete"></b-icon>
-                <span>Delete</span>
-              </button>
-            </p>
-          </b-field>
         </template>
       </b-table>
     </div>

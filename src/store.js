@@ -14,8 +14,10 @@ fb.auth.onAuthStateChanged(user => {
       if (doc.exists) {
         const sessions = doc.data().sessions
         const settings = doc.data().settings
-        if(sessions) store.commit('setSessions', sessions)
-        if(settings) store.commit('setSettings', settings)
+        const maxWeight = doc.data().maxWeight
+        if (sessions) store.commit('setSessions', sessions)
+        if (settings) store.commit('setSettings', settings)
+        if (maxWeight) store.commit('setMaxWeight', maxWeight)
       } else {
         fb.userCollection.doc(user.uid).set({
           settings: null,
@@ -27,7 +29,7 @@ fb.auth.onAuthStateChanged(user => {
 })
 
 const defaultSettings = {
-  weight: '',
+  weight: 0,
   sets: 3,
   reps: 10,
   suggestions: false
@@ -37,6 +39,7 @@ export const store = new Vuex.Store({
   state: {
     user: null,
     sessions: [],
+    maxWeight: [],
     settings: defaultSettings,
     exerciseList: []
   },
@@ -44,6 +47,7 @@ export const store = new Vuex.Store({
     getUserId: state => state.user,
     getSettings: state => state.settings,
     getSessions: state => state.sessions,
+    getMaxWeight: state => state.maxWeight,
     getExerciseList: state => state.exerciseList
   },
   actions: {
@@ -88,6 +92,9 @@ export const store = new Vuex.Store({
     },
     setSettings(state, settings) {
       state.settings = settings
+    },
+    setMaxWeight(state, maxWeight) {
+      state.maxWeight = maxWeight
     },
     setExerciseList(state, list) {
       state.exerciseList = list
