@@ -41,8 +41,8 @@
             {{ props.row.resistance }}
           </b-table-column>
           <b-table-column width="40">
-            <button class="button is-small is-borderless" @click="editWorkout(props.row)">
-              <b-icon icon="pencil"></b-icon>
+            <button class="button is-small is-borderless" @click="deleteWorkout(props.index)">
+              <b-icon icon="delete"></b-icon>
             </button>
           </b-table-column>
         </template>
@@ -56,7 +56,7 @@
       </b-table>
     </div>
     <b-modal :active.sync="isFormActive" has-modal-card>
-      <workout-form :id="id" :row="row"></workout-form>
+      <workout-form :id="id"></workout-form>
     </b-modal>
   </section>
 </template>
@@ -70,7 +70,6 @@ export default {
   components: { WorkoutForm },
   data() {
     return {
-      row: null,
       session: null,
       isFormActive: false
     }
@@ -87,13 +86,14 @@ export default {
   },
   methods: {
     addWorkout() {
-      this.row = null
       this.isFormActive = true
     },
-    editWorkout(row) {
-      if(!row.start) return
-      this.row = row
-      this.isFormActive = true
+    deleteWorkout(row) {
+      this.session.workout.splice(row, 1)
+      const sess = sessionCollection.doc(this.id)
+      sess.update({
+        workout: this.session.workout
+      })
     },
     deleteSession() {
       sessionCollection.doc(this.id).delete().then(() => {

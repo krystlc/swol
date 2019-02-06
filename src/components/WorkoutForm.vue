@@ -4,9 +4,6 @@
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head">
           <p class="modal-card-title">Add workout</p>
-          <button class="button is-text" type="button" @click="deleteWorkout" v-if="row">
-            <b-icon icon="delete"></b-icon>
-          </button>
         </header>
         <section class="modal-card-body">
           <b-field label="Exercise">
@@ -48,8 +45,7 @@
           <b-checkbox v-model="workout.resistance">Resistance band</b-checkbox>
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-primary" @click.prevent="saveWorkout" v-if="!row">Save</button>
-          <button class="button is-primary" @click.prevent="updateWorkout" v-else>Update</button>
+          <button class="button is-primary" @click.prevent="saveWorkout">Save</button>
           <button class="button" type="button" @click.prevent="$parent.close()">Close</button>
         </footer>
       </div>
@@ -62,7 +58,7 @@ import { mapGetters } from 'vuex'
 import { fieldValue, sessionCollection, userCollection } from '@/firebaseConfig'
 
 export default {
-  props: ['id','row'],
+  props: ['id'],
   data() {
     return {
       exercise: '',
@@ -77,22 +73,13 @@ export default {
       keepFirst: true
     }
   },
-  mounted() {
-    if(this.row) {
-      this.exercise = this.row.exercise
-      this.sets = this.row.sets
-      this.resistance = this.row.resistance
-    } else {
-      console.log('maybe i should remove this `row` thing?')
-    }
-  },
   computed: {
     ...mapGetters(['getExerciseList', 'getSettings', 'getMaxWeight', 'getUserId']),
     workout() {
       return {
+        sets: this.sets,
         exercise: this.exercise,
         resistance: this.resistance,
-        sets: this.sets,
       }
     },
     filteredDataObj() {
@@ -136,34 +123,7 @@ export default {
         console.log('woops', err)
       }) 
     },
-    updateWorkout() {
-      const session = sessionCollection.doc(this.id)
-      session.update({
-        workout: fieldValue.arrayRemove(this.row)
-      }).then(() => {
-        session.update({
-          workout: fieldValue.arrayUnion(this.workout)
-        }).then(() => {
-          this.$parent.close()
-        }).catch(err => {
-          console.log('woops', err)
-        })
-      }).catch(err => {
-        console.log('woops', err)
-      })
-    },
-    deleteWorkout() {
-      const session = sessionCollection.doc(this.id)
-      session.update({
-        workout: fieldValue.arrayRemove(this.row)
-      }).then(() => {
-        this.$parent.close()
-      }).catch(err => {
-        console.log('woops', err)
-      })
-    },
     checkLastMax(newEx) {
-      console.log(this.exercise, newEx)
       if (this.exercise in this.getMaxWeight) {
         this.sets[0].weight = this.getMaxWeight[this.exercise]
       } else {
@@ -177,7 +137,6 @@ export default {
         maxWeight[this.exercise] = newMax
         console.log(maxWeight)
         const user = userCollection.doc(this.getUserId).update({ maxWeight }).then(() => {
-          console.log('new max set')
         }).catch(err => {
           console.log('could not set new max', err)
         })
