@@ -46,7 +46,7 @@ export const store = new Vuex.Store({
   getters: {
     getUserId: state => state.user,
     getSettings: state => state.settings,
-    getSessions: state => state.sessions,
+    getSessions: state => state.sessions.reverse(),
     getMaxWeight: state => state.maxWeight,
     getExerciseList: state => state.exerciseList
   },
