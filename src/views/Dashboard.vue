@@ -5,11 +5,11 @@
         <div class="level-left">
           <h2 class="title">My Sessions</h2>
         </div>
-        <!-- <div class="level-right">
-          <button class="button is-primary" @click="create">
+        <div class="level-right">
+          <button class="button is-primary" @click="createSess">
             <b-icon icon="plus"></b-icon>
             <span>Create session</span>
-          </button> -->
+          </button>
         </div>
       </div>
       <div class="columns is-multiline is-1 is-variable">
@@ -34,7 +34,7 @@
                     <b-dropdown-item aria-role="listitem" has-link>
                       <a :href="`/s/${session.id}`">Edit</a>
                     </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem">Delete</b-dropdown-item>
+                    <b-dropdown-item aria-role="listitem" @click="deleteSess(session.id)">Delete</b-dropdown-item>
                   </b-dropdown>
                 </div>
               </div>
@@ -58,33 +58,29 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { sessionCollection } from '@/firebaseConfig'
 
 export default {
   computed: {
-    ...mapGetters('sessionsData', ['getSessions'])
+    ...mapGetters('sessionsData', ['getSessions']),
+    ...mapGetters('userData', ['docModeId'])
+  },
+  methods: {
+    async createSess() {
+      const newDoc = await this.$store.dispatch('sessionsData/set', {
+        created: new Date(), 
+        uid: this.docModeId
+      })
+      if (newDoc) {
+        this.$router.push(`/s/${newDoc}`)
+      } else {
+        // TODO: replace with toast
+        alert('something went wrong')
+      }
+    },
+    deleteSess(id) {
+      this.$store.dispatch('sessionsData/delete', id)
+    }
   }
-  // computed: {
-  //   ...mapGetters(['sessionsData/getSessions', 'getUserId'])
-  // },
-  // methods: {
-  //   create() {
-  //     const created = new Date()
-  //     const session = {
-  //       created,
-  //       workout: [],
-  //       uid: this.getUserId
-  //     }
-  //     sessionCollection.add(session)
-  //       .then(result => {
-  //         this.$router.push(`/s/${result.id}`)
-  //       })
-  //       .catch(err => {
-  //         // TODO: replace with toast
-  //         alert('someone has to fix this', err)
-  //       })
-  //   }
-  // }
 }
 </script>
 

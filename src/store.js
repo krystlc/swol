@@ -18,7 +18,7 @@ fb.auth.onAuthStateChanged(user => {
     store.dispatch('sessionsData/fetchAndAdd', {
       where: [['uid', '==', '{userId}']],
       orderBy: ['created', 'desc'],
-      limit: 2
+      limit: 5
     })
 
     // store.commit('setUser', user.uid)
