@@ -20,9 +20,8 @@ fb.auth.onAuthStateChanged(user => {
       orderBy: ['created', 'desc'],
       limit: 5
     })
+    store.dispatch('loadExerciseList')
 
-    // store.commit('setUser', user.uid)
-    // store.dispatch('loadExerciseList')
     // fb.userCollection.doc(user.uid).onSnapshot(doc => {
     //   if (doc.exists) {
     //     const sessions = doc.data().sessions
@@ -63,7 +62,6 @@ export const store = new Vuex.Store({
   getters: {
     getUserId: state => state.user,
     getSettings: state => state.settings,
-    // getSessions: state => state.sessions.reverse(),
     getMaxWeight: state => state.maxWeight,
     getExerciseList: state => state.exerciseList
   },

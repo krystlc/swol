@@ -13,42 +13,41 @@
         </div>
       </div>
       <div class="columns is-multiline is-1 is-variable">
-        <div class="column is-one-quarter" v-for="(session, i) in getSessions" :key="i">
-          <div class="card">
-            <div class="card-content">
-              <div class="media">
-                <div class="media-content">
-                  <p class="title is-4">{{ session.created.seconds | moment("dddd") }}</p>
-                  <p class="subtitle is-6">
-                    <time
-                      :datetime="session.created.seconds"
-                    >{{ session.created.seconds | moment("MMMM Do YYYY, h:mm a") }}</time>
+        <div class="column is-one-quarter" v-for="(session, i) in getSessions" :key="`session-${i}`" @click="openSess(session.id)">
+          <div class="box">
+            <article class="media">
+              <div class="media-content">
+                <div class="is-pulled-right">
+                  <button class="delete" @click="deleteSess(session.id)"></button>
+                </div>
+                <div class="content">
+                  <p>
+                    <strong>
+                      {{ session.created.seconds | moment("dddd") }}
+                    </strong>
+                    <br>
+                    <small>
+                      <time :datetime="session.created.seconds">
+                        {{ session.created.seconds | moment("MMMM Do YYYY, h:mm a") }}
+                      </time>
+                    </small>
                   </p>
-                </div>
-                <div class="media-right">
-                  <b-dropdown hoverable position="is-bottom-left" aria-role="list">
-                    <button class="button is-text" slot="trigger">
-                      <b-icon icon="dots-horizontal"></b-icon>
-                    </button>
-                    <b-dropdown-item aria-role="listitem">Share</b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem" has-link>
-                      <a :href="`/s/${session.id}`">Edit</a>
-                    </b-dropdown-item>
-                    <b-dropdown-item aria-role="listitem" @click="deleteSess(session.id)">Delete</b-dropdown-item>
-                  </b-dropdown>
+                  <ul>
+                    <li v-for="(workout, j) in session.workout" :key="`exercise-${j}`">
+                      <span>
+                        {{ workout.exercise }}
+                      </span>
+                      <span class="is-italic">
+                        <strong>{{ workout.sets[0].weight }}</strong>lbs
+                      </span>
+                      <span class="is-size-7 has-text-grey-light">
+                        {{ workout.sets.length }}x{{ workout.sets[0].reps }}
+                      </span>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <div class="content">
-                <b-field grouped group-multiline>
-                  <div class="control" v-for="(workout, j) in session.workout" :key="j">
-                    <b-taglist attached>
-                      <b-tag type="is-dark">{{ workout.exercise }}</b-tag>
-                      <b-tag type="is-primary" v-if="workout.sets">{{ workout.sets.length }} x {{ workout.sets[0].reps }}</b-tag>
-                    </b-taglist>
-                  </div>
-                </b-field>
-              </div>
-            </div>
+            </article>
           </div>
         </div>
       </div>
@@ -68,30 +67,35 @@ export default {
     async createSess() {
       const newDoc = await this.$store.dispatch('sessionsData/set', {
         created: new Date(), 
-        uid: this.docModeId
-      })
-      if (newDoc) {
-        this.$router.push(`/s/${newDoc}`)
-      } else {
-        // TODO: replace with toast
-        alert('something went wrong')
-      }
+        uid: this.docModeId,
+        workout: []
+      }).catch(err => alert('something went wrong creating a new session!', err)) // TODO: replace with toast
+      if (newDoc) this.$router.push(`/s/${newDoc}`)
     },
     deleteSess(id) {
       this.$store.dispatch('sessionsData/delete', id)
+    },
+    openSess(id) {
+      this.$router.push(`/s/${id}`)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.card {
+.box {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-
-  .card-footer {
-    margin-top: auto;
+  &:hover {
+    cursor: pointer;
+  }
+  ul {
+    margin: 0;
+  }
+  ul li {
+    list-style: none;
+  }
+  ul li + li {
+    margin-top: 0.4em;
   }
 }
 </style>

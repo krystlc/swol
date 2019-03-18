@@ -10,7 +10,7 @@
           </p>
         </div>
       </div>
-      <div class="level-right" v-if="getUserId">
+      <div class="level-right" v-if="signedIn">
         <p class="level-item">
           <button class="button is-text" @click="isFormActive = true">
             <b-icon icon="settings"></b-icon>
@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getUserId'])
+    ...mapGetters('userData', ['signedIn'])
   },
   methods: {
     ...mapActions(['signOut'])
