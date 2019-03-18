@@ -5,11 +5,11 @@
         <div class="level-left">
           <h2 class="title">My Sessions</h2>
         </div>
-        <div class="level-right">
+        <!-- <div class="level-right">
           <button class="button is-primary" @click="create">
             <b-icon icon="plus"></b-icon>
             <span>Create session</span>
-          </button>
+          </button> -->
         </div>
       </div>
       <div class="columns is-multiline is-1 is-variable">
@@ -42,8 +42,8 @@
                 <b-field grouped group-multiline>
                   <div class="control" v-for="(workout, j) in session.workout" :key="j">
                     <b-taglist attached>
-                      <b-tag type="is-dark">{{ workout || workout.name }}</b-tag>
-                      <b-tag type="is-primary" v-if="workout.reps">{{ workout.reps }}</b-tag>
+                      <b-tag type="is-dark">{{ workout.exercise }}</b-tag>
+                      <b-tag type="is-primary" v-if="workout.sets">{{ workout.sets.length }} x {{ workout.sets[0].reps }}</b-tag>
                     </b-taglist>
                   </div>
                 </b-field>
@@ -62,27 +62,30 @@ import { sessionCollection } from '@/firebaseConfig'
 
 export default {
   computed: {
-    ...mapGetters(['getSessions', 'getUserId'])
-  },
-  methods: {
-    create() {
-      const created = new Date()
-      const session = {
-        created,
-        workout: [],
-        uid: this.getUserId
-      }
-      sessionCollection.add(session)
-        .then(result => {
-          this.$router.push(`/s/${result.id}`)
-        })
-        .catch(err => {
-          // TODO: replace with toast
-          alert('someone has to fix this', err)
-        })
-    }
+    ...mapGetters('sessionsData', ['getSessions'])
   }
-};
+  // computed: {
+  //   ...mapGetters(['sessionsData/getSessions', 'getUserId'])
+  // },
+  // methods: {
+  //   create() {
+  //     const created = new Date()
+  //     const session = {
+  //       created,
+  //       workout: [],
+  //       uid: this.getUserId
+  //     }
+  //     sessionCollection.add(session)
+  //       .then(result => {
+  //         this.$router.push(`/s/${result.id}`)
+  //       })
+  //       .catch(err => {
+  //         // TODO: replace with toast
+  //         alert('someone has to fix this', err)
+  //       })
+  //   }
+  // }
+}
 </script>
 
 <style lang="scss" scoped>

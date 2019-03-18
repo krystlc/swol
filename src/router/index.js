@@ -40,7 +40,7 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  const currentUser = store.getters.getUserId
+  const currentUser = store.getters['userData/signedIn']
 
   if (requiresAuth && !currentUser) {
     next('/login')

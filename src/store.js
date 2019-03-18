@@ -1,30 +1,43 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+
 import axios from 'axios'
 import router from '@/router'
 import * as fb from '@/firebaseConfig'
+
+import userData from '@/store/modules/userData'
+import sessionsData from '@/store/modules/sessionsData'
+import createEasyFirestore from 'vuex-easy-firestore'
 
 Vue.use(Vuex)
 
 fb.auth.onAuthStateChanged(user => {
   if (user) {
-    store.commit('setUser', user.uid)
-    store.dispatch('loadExerciseList')
-    fb.userCollection.doc(user.uid).onSnapshot(doc => {
-      if (doc.exists) {
-        const sessions = doc.data().sessions
-        const settings = doc.data().settings
-        const maxWeight = doc.data().maxWeight
-        if (sessions) store.commit('setSessions', sessions)
-        if (settings) store.commit('setSettings', settings)
-        if (maxWeight) store.commit('setMaxWeight', maxWeight)
-      } else {
-        fb.userCollection.doc(user.uid).set({
-          settings: null,
-          sessions: null
-        })
-      }
+    // getting shwifty
+    store.dispatch('userData/openDBChannel')
+    store.dispatch('sessionsData/fetchAndAdd', {
+      where: [['uid', '==', '{userId}']],
+      orderBy: ['created', 'desc'],
+      limit: 2
     })
+
+    // store.commit('setUser', user.uid)
+    // store.dispatch('loadExerciseList')
+    // fb.userCollection.doc(user.uid).onSnapshot(doc => {
+    //   if (doc.exists) {
+    //     const sessions = doc.data().sessions
+    //     const settings = doc.data().settings
+    //     const maxWeight = doc.data().maxWeight
+    //     if (sessions) store.commit('setSessions', sessions)
+    //     if (settings) store.commit('setSettings', settings)
+    //     if (maxWeight) store.commit('setMaxWeight', maxWeight)
+    //   } else {
+    //     fb.userCollection.doc(user.uid).set({
+    //       settings: null,
+    //       sessions: null
+    //     })
+    //   }
+    // })
   }
 })
 
@@ -35,7 +48,11 @@ const defaultSettings = {
   suggestions: false
 }
 
+const easyUser = createEasyFirestore(userData, {logging: true})
+const easySessions = createEasyFirestore(sessionsData, {logging: true})
+
 export const store = new Vuex.Store({
+  plugins: [easyUser, easySessions],
   state: {
     user: null,
     sessions: [],
@@ -46,7 +63,7 @@ export const store = new Vuex.Store({
   getters: {
     getUserId: state => state.user,
     getSettings: state => state.settings,
-    getSessions: state => state.sessions.reverse(),
+    // getSessions: state => state.sessions.reverse(),
     getMaxWeight: state => state.maxWeight,
     getExerciseList: state => state.exerciseList
   },
