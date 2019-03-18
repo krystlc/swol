@@ -9,6 +9,7 @@ export default {
     guard: ['created_at', 'created_by'],
     addedHook: function (updateStore, doc, id, store) {
       updateStore(doc)
+      console.log('doc was added', doc)
     }
   },
   getters: {

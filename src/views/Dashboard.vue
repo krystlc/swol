@@ -13,36 +13,37 @@
         </div>
       </div>
       <div class="columns is-multiline is-1 is-variable">
-        <div class="column is-one-quarter" v-for="(session, i) in getSessions" :key="`session-${i}`" @click="openSess(session.id)">
+        <div class="column is-one-third" v-for="(session, i) in getSessions" :key="`session-${i}`" @click="openSess(session.id)">
           <div class="box">
             <article class="media">
               <div class="media-content">
-                <div class="is-pulled-right">
-                  <button class="delete" @click="deleteSess(session.id)"></button>
-                </div>
-                <div class="content">
-                  <p>
-                    <strong>
+                <header class="level is-mobile">
+                  <div class="level-left">
+                    <h2 class="is-size-4">
                       {{ session.created.seconds | moment("dddd") }}
-                    </strong>
-                    <br>
-                    <small>
-                      <time :datetime="session.created.seconds">
-                        {{ session.created.seconds | moment("MMMM Do YYYY, h:mm a") }}
-                      </time>
-                    </small>
-                  </p>
+                      <span class="is-size-7">
+                        {{ session.created.seconds | moment("MM/DD/YY") }}
+                      </span>
+                    </h2>
+                  </div>
+                  <div class="level-right">
+                    <button class="delete" @click="deleteSess(session.id)"></button>
+                  </div>
+                </header>
+                <div class="content">
                   <ul>
                     <li v-for="(workout, j) in session.workout" :key="`exercise-${j}`">
-                      <span>
+                      <span class="name">
                         {{ workout.exercise }}
                       </span>
-                      <span class="is-italic">
-                        <strong>{{ workout.sets[0].weight }}</strong>lbs
-                      </span>
-                      <span class="is-size-7 has-text-grey-light">
-                        {{ workout.sets.length }}x{{ workout.sets[0].reps }}
-                      </span>
+                      <b-taglist>
+                        <b-tag type="is-white is-medium">
+                          {{ workout.sets[0].weight }} <i class="has-text-grey">lbs</i>
+                        </b-tag>
+                        <b-tag type="is-white is-medium">
+                          {{ workout.sets.length }} x {{ workout.sets[0].reps }} <i class="has-text-grey">reps</i>
+                        </b-tag>
+                      </b-taglist>
                     </li>
                   </ul>
                 </div>
@@ -85,17 +86,27 @@ export default {
 <style lang="scss" scoped>
 .box {
   height: 100%;
+
   &:hover {
     cursor: pointer;
   }
   ul {
     margin: 0;
-  }
-  ul li {
-    list-style: none;
-  }
-  ul li + li {
-    margin-top: 0.4em;
+    
+    li {
+      list-style: none;
+      line-height: 1.2;
+      margin-bottom: 0.5em;
+    }
+    
+    li + li {
+      margin-top: 0.5em;
+      padding-top: 0.5em;
+      border-top: 1px solid #eee;
+    }
+    .name {
+      position: relative;
+    }
   }
 }
 </style>
