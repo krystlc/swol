@@ -5,8 +5,9 @@ import axios from 'axios'
 import router from '@/router'
 import * as fb from '@/firebaseConfig'
 
-import userData from '@/store/modules/userData'
-import sessionsData from '@/store/modules/sessionsData'
+import userDoc from '@/store/modules/userDoc'
+import sessionDoc from '@/store/modules/sessionDoc'
+import sessionCollection from '@/store/modules/sessionCollection'
 import createEasyFirestore from 'vuex-easy-firestore'
 
 Vue.use(Vuex)
@@ -14,11 +15,11 @@ Vue.use(Vuex)
 fb.auth.onAuthStateChanged(user => {
   if (user) {
     // getting shwifty
-    store.dispatch('userData/openDBChannel')
-    store.dispatch('sessionsData/fetchAndAdd', {
+    store.dispatch('userDoc/openDBChannel')
+    store.dispatch('sessionCollection/fetchAndAdd', {
       where: [['uid', '==', '{userId}']],
-      orderBy: ['created', 'desc'],
-      limit: 5
+      orderBy: ['created','desc'],
+      limit: 1
     })
     store.dispatch('loadExerciseList')
 
@@ -47,11 +48,13 @@ const defaultSettings = {
   suggestions: false
 }
 
-const easyUser = createEasyFirestore(userData, {logging: true})
-const easySessions = createEasyFirestore(sessionsData, {logging: true})
+const easyFirestores  = createEasyFirestore([userDoc, sessionDoc, sessionCollection], {
+  logging: true,
+  preventInitialDocInsertion: true
+})
 
 export const store = new Vuex.Store({
-  plugins: [easyUser, easySessions],
+  plugins: [easyFirestores],
   state: {
     user: null,
     sessions: [],
@@ -63,7 +66,15 @@ export const store = new Vuex.Store({
     getUserId: state => state.user,
     getSettings: state => state.settings,
     getMaxWeight: state => state.maxWeight,
-    getExerciseList: state => state.exerciseList
+    getExerciseList: state => state.exerciseList,
+    getDefaultWorkout: state => {
+      return {
+        exercise: '',
+        resistance: false,
+        weight: state.settings.weight,
+        reps: state.settings.reps
+      }
+    }
   },
   actions: {
     signIn({commit}) {

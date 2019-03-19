@@ -41,7 +41,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('userData', ['signedIn'])
+    ...mapGetters('userDoc', ['signedIn'])
   },
   methods: {
     ...mapActions(['signOut'])

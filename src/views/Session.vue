@@ -1,10 +1,11 @@
 <template>
   <section class="section">
     <div class="container">
-      <div class="level" v-if="sessionDate">
+      <pre>{{ session }}</pre>
+      <div class="level">
         <div class="level-left">
-          <h2 class="title level-item">{{ sessionDate | moment("dddd")}}</h2>
-          <h3 class="subtitle level-item">{{ sessionDate | moment("MMMM Do YYYY")}}</h3>
+          <h2 class="title level-item">{{ session.created_at.seconds | moment('dddd') }}</h2>
+          <h3 class="subtitle level-item">{{ session.created_at.seconds | moment('MMMM Do YYYY') }}</h3>
         </div>
         <div class="level-right">
           <div class="level-item">
@@ -24,7 +25,7 @@
           </div>
         </div>
       </div>
-      <b-table :data="session ? session.workout : []" narrowed hoverable>
+      <b-table :data="session.workout" narrowed hoverable>
         <template slot-scope="props">
           <b-table-column field="exercise" label="Exercise">
             {{ props.row.exercise }}
@@ -62,7 +63,7 @@
 </template>
 
 <script>
-import { sessionCollection } from '@/firebaseConfig'
+import { mapGetters } from 'vuex'
 import WorkoutForm from '@/components/WorkoutForm'
 
 export default {
@@ -70,39 +71,46 @@ export default {
   components: { WorkoutForm },
   data() {
     return {
-      session: null,
       isFormActive: false
     }
   },
-  created() {
-    sessionCollection.doc(this.id).onSnapshot(doc => {
-      this.session = doc.data()
-    })
+  mounted() {
+    if (!this.storedSession(this.id)) {
+      this.$store.dispatch('sessionDoc/openDBChannel', {docId: this.id})
+    }
+  },
+  beforeDestroy() {
+    if (!this.storedSession(this.id)) {
+      this.$store.dispatch('sessionDoc/closeDBChannel', {clearModule: true})
+    }
   },
   computed: {
-    sessionDate() {
-      if (this.session) return this.session.created.seconds
+    ...mapGetters('sessionCollection', ['storedSession']),
+    ...mapGetters('sessionDoc', ['fetchedSession']),
+    session() {
+      let session = this.storedSession(this.id)
+      return session ? session : this.fetchedSession
     }
   },
   methods: {
     addWorkout() {
       this.isFormActive = true
     },
-    deleteWorkout(row) {
-      this.session.workout.splice(row, 1)
-      const sess = sessionCollection.doc(this.id)
-      sess.update({
-        workout: this.session.workout
-      })
-    },
-    deleteSession() {
-      sessionCollection.doc(this.id).delete().then(() => {
-        this.$router.push('/dashboard')
-      }).catch(() => {
-        // TODO: Replace with a toast message
-        alert('looks like there was an error')
-      })
-    },
+    // deleteWorkout(row) {
+      // this.session.workout.splice(row, 1)
+      // const sess = sessionCollection.doc(this.id)
+      // sess.update({
+      //   workout: this.session.workout
+      // })
+    // },
+    // deleteSession() {
+      // sessionCollection.doc(this.id).delete().then(() => {
+      //   this.$router.push('/dashboard')
+      // }).catch(() => {
+      //   // TODO: Replace with a toast message
+      //   alert('looks like there was an error')
+      // })
+    // },
   }
 }
 </script>

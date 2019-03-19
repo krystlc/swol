@@ -6,14 +6,14 @@
           <h2 class="title">My Sessions</h2>
         </div>
         <div class="level-right">
-          <button class="button is-primary" @click="createSess">
+          <router-link class="button is-primary" to="/s/new" tag="button">
             <b-icon icon="plus"></b-icon>
             <span>Create session</span>
-          </button>
+          </router-link>
         </div>
       </div>
-      <div class="columns is-multiline is-1 is-variable">
-        <div class="column is-one-third" v-for="(session, i) in getSessions" :key="`session-${i}`" @click="openSess(session.id)">
+      <div class="columns is-multiline is-variable">
+        <div class="column is-one-third" v-for="(session, i) in list" :key="`session-${i}`">
           <div class="box">
             <article class="media">
               <div class="media-content">
@@ -27,7 +27,7 @@
                     </h2>
                   </div>
                   <div class="level-right">
-                    <button class="delete" @click="deleteSess(session.id)"></button>
+                    <button class="delete" @click="deleteSession(session.id)"></button>
                   </div>
                 </header>
                 <div class="content">
@@ -61,22 +61,13 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('sessionsData', ['getSessions']),
-    ...mapGetters('userData', ['docModeId'])
+    ...mapGetters('sessionCollection', ['list'])
   },
   methods: {
-    async createSess() {
-      const newDoc = await this.$store.dispatch('sessionsData/set', {
-        created: new Date(), 
-        uid: this.docModeId,
-        workout: []
-      }).catch(err => alert('something went wrong creating a new session!', err)) // TODO: replace with toast
-      if (newDoc) this.$router.push(`/s/${newDoc}`)
-    },
-    deleteSess(id) {
-      this.$store.dispatch('sessionsData/delete', id)
-    },
-    openSess(id) {
+    // deleteSession(id) {
+    //   this.$store.dispatch('sessionCollection/delete', id)
+    // },
+    openSession(id) {
       this.$router.push(`/s/${id}`)
     }
   }
@@ -86,10 +77,7 @@ export default {
 <style lang="scss" scoped>
 .box {
   height: 100%;
-
-  &:hover {
-    cursor: pointer;
-  }
+  
   ul {
     margin: 0;
     
