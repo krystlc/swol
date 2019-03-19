@@ -96,7 +96,6 @@ export default {
       workout.sets.splice(set - 1, 1)
     },
     addWorkout(workout) {
-      console.log(workout)
       this.session.unshift(workout)
     }
   }
