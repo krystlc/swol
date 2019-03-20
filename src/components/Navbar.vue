@@ -49,7 +49,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 nav {
   padding: 1em;
   border-bottom: 1px solid #eee

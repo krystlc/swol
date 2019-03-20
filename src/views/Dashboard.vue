@@ -1,7 +1,7 @@
 <template>
   <section class="section">
     <div class="container">
-      <div class="level">
+      <div class="level is-mobile">
         <div class="level-left">
           <h2 class="title">My Sessions</h2>
         </div>
