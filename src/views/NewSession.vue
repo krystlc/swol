@@ -94,7 +94,7 @@ export default {
     saveSession() {
       this.$store.dispatch('sessionCollection/insert', {
         workout: this.session
-      })
+      }).then(() => this.$router.push('/dashboard'))
     }
   }
 }
