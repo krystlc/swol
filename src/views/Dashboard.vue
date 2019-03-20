@@ -1,56 +1,46 @@
 <template>
   <section class="section">
     <div class="container">
-      <div class="level is-mobile">
-        <div class="level-left">
-          <h2 class="title">My Sessions</h2>
-        </div>
-        <div class="level-right">
-          <router-link class="button is-primary" to="/s/new" tag="button">
-            <b-icon icon="plus"></b-icon>
-            <span>Create session</span>
-          </router-link>
-        </div>
-      </div>
-      <div class="columns is-multiline is-variable">
-        <div class="column is-one-third" v-for="(session, i) in list" :key="`session-${i}`">
-          <div class="box">
-            <article class="media">
-              <div class="media-content">
-                <header class="level is-mobile">
-                  <div class="level-left">
-                    <h2 class="is-size-4">
-                      <!-- {{ session.created.seconds | moment("dddd") }}
-                      <span class="is-size-7">
-                        {{ session.created.seconds | moment("MM/DD/YY") }}
-                      </span> -->
-                    </h2>
-                  </div>
-                  <div class="level-right">
-                    <button class="delete" @click="deleteSession(session.id)"></button>
-                  </div>
-                </header>
+      <div class="dashboard">
+        <header>
+          <h1 class="subtitle">My sessions</h1>
+        </header>
+        <div class="session-list">
+          <div class="box session is-clipped" v-for="(session, i) in list" :key="`session-${i}`">
+            <div class="columns is-vcentered is-mobile is-gapless">
+              <div class="column is-11">
                 <div class="content">
-                  <ul>
-                    <li v-for="(workout, j) in session.workout" :key="`exercise-${j}`">
-                      <span class="name">
+                  <h6>
+                    Monday
+                  </h6>
+                  <ul v-for="(workout, j) in session.workout" :key="`exercise-${j}`" class="is-marginless">
+                    <li>
+                      <span class="workout-name">
                         {{ workout.exercise }}
                       </span>
-                      <b-taglist>
-                        <b-tag type="is-white is-medium">
-                          {{ workout.sets[0].weight }} <i class="has-text-grey">lbs</i>
+                      <b-taglist class="is-inline" attached>
+                        <b-tag>
+                          {{ workout.sets[0].weight }} <span class="is-italic">lbs</span>
                         </b-tag>
-                        <b-tag type="is-white is-medium">
-                          {{ workout.sets.length }} x {{ workout.sets[0].reps }} <i class="has-text-grey">reps</i>
+                        <b-tag>
+                          {{ workout.sets.length }} x {{ workout.sets[0].reps }} <span class="is-italic">reps</span>
                         </b-tag>
                       </b-taglist>
                     </li>
                   </ul>
                 </div>
               </div>
-            </article>
+              <div class="column">
+                <button class="delete"></button>
+              </div>
+            </div>
           </div>
         </div>
+      </div>
+      <div class="fab">
+        <router-link class="button is-primary" to="/s/new" tag="button">
+          <b-icon icon="plus" size="is-large"></b-icon>
+        </router-link>
       </div>
     </div>
   </section>
@@ -75,26 +65,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.box {
-  height: 100%;
+.fab {
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
   
-  ul {
-    margin: 0;
-    
-    li {
-      list-style: none;
-      line-height: 1.2;
-      margin-bottom: 0.5em;
-    }
-    
-    li + li {
-      margin-top: 0.5em;
-      padding-top: 0.5em;
-      border-top: 1px solid #eee;
-    }
-    .name {
-      position: relative;
-    }
+  .button {
+    width: 4em;
+    height: 4em;
+    border-radius: 50%;
+  }
+}
+header {
+  margin-bottom: 1em;
+}
+.session {
+  li {
+    list-style: none;
+    white-space: nowrap;
   }
 }
 </style>
