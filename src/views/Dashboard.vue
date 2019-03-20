@@ -20,10 +20,10 @@
                 <header class="level is-mobile">
                   <div class="level-left">
                     <h2 class="is-size-4">
-                      {{ session.created.seconds | moment("dddd") }}
+                      <!-- {{ session.created.seconds | moment("dddd") }}
                       <span class="is-size-7">
                         {{ session.created.seconds | moment("MM/DD/YY") }}
-                      </span>
+                      </span> -->
                     </h2>
                   </div>
                   <div class="level-right">
@@ -64,9 +64,9 @@ export default {
     ...mapGetters('sessionCollection', ['list'])
   },
   methods: {
-    // deleteSession(id) {
-    //   this.$store.dispatch('sessionCollection/delete', id)
-    // },
+    deleteSession(id) {
+      this.$store.dispatch('sessionCollection/delete', id)
+    },
     openSession(id) {
       this.$router.push(`/s/${id}`)
     }

@@ -38,7 +38,7 @@
           </b-table-column>
         </template>
         <template slot="footer">
-          <b-field grouped>
+          <b-field grouped position="is-right">
             <b-checkbox v-model="workout.resistance">Resistance</b-checkbox>
           </b-field>
         </template>
