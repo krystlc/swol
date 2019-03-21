@@ -6,10 +6,9 @@
           <h1 class="subtitle">My sessions</h1>
         </header>
         <div class="session-list">
-          <!-- add  @click="openSession(session.id)" somewhere -->
           <div class="box session is-clipped" v-for="(session, i) in list" :key="`session-${i}`">
             <div class="columns is-mobile is-gapless">
-              <div class="column is-11">
+              <div class="column is-11" @click="openSession(session.id)">
                 <div class="content">
                   <h6>
                     {{ date(session) | moment('dddd') }}
@@ -33,7 +32,7 @@
                 </div>
               </div>
               <div class="column has-text-right">
-                <button class="delete"></button>
+                <button class="delete" @click="deleteSession(session.id)"></button>
               </div>
             </div>
           </div>
@@ -41,7 +40,7 @@
       </div>
       <div class="fab">
         <router-link class="button is-primary" to="/s/new" tag="button">
-          <b-icon icon="plus" size="is-large"></b-icon>
+          <b-icon icon="plus" size="is-medium"></b-icon>
         </router-link>
       </div>
     </div>
