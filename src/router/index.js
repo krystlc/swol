@@ -37,7 +37,7 @@ const router = new Router({
     },
     {
       path: '/s/:id',
-      component: Session,
+      component: NewSession,
       meta: {
         requiresAuth: true
       },
