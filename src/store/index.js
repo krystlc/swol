@@ -17,9 +17,9 @@ fb.auth.onAuthStateChanged(user => {
     // getting shwifty
     store.dispatch('userDoc/openDBChannel')
     store.dispatch('sessionCollection/fetchAndAdd', {
-      where: [['uid', '==', '{userId}']],
-      orderBy: ['created','desc'],
-      limit: 1
+      where: [['created_by', '==', '{userId}']],
+      orderBy: ['created_at','desc'],
+      limit: 5
     })
     store.dispatch('loadExerciseList')
 

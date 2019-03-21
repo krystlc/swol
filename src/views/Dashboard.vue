@@ -6,12 +6,13 @@
           <h1 class="subtitle">My sessions</h1>
         </header>
         <div class="session-list">
+          <!-- add  @click="openSession(session.id)" somewhere -->
           <div class="box session is-clipped" v-for="(session, i) in list" :key="`session-${i}`">
-            <div class="columns is-vcentered is-mobile is-gapless">
+            <div class="columns is-mobile is-gapless">
               <div class="column is-11">
                 <div class="content">
                   <h6>
-                    Monday
+                    {{ date(session) | moment('dddd') }}
                   </h6>
                   <ul v-for="(workout, j) in session.workout" :key="`exercise-${j}`" class="is-marginless">
                     <li>
@@ -21,16 +22,17 @@
                       <b-taglist class="is-inline" attached>
                         <b-tag>
                           {{ workout.sets[0].weight }} <span class="is-italic">lbs</span>
-                        </b-tag>
-                        <b-tag>
                           {{ workout.sets.length }} x {{ workout.sets[0].reps }} <span class="is-italic">reps</span>
+                        </b-tag>
+                        <b-tag type="is-info" v-if="workout.pr">
+                          PR
                         </b-tag>
                       </b-taglist>
                     </li>
                   </ul>
                 </div>
               </div>
-              <div class="column">
+              <div class="column has-text-right">
                 <button class="delete"></button>
               </div>
             </div>
@@ -51,9 +53,18 @@ import { mapGetters } from 'vuex'
 
 export default {
   computed: {
-    ...mapGetters('sessionCollection', ['list'])
+    ...mapGetters('sessionCollection', ['list']),
   },
   methods: {
+    date(session) {
+      if (session.hasOwnProperty('created')) {
+        return session.created.seconds
+      } else if (session.hasOwnProperty('created_at')) {
+        return session.created_at
+      } else {
+        return 'i don\'t know'
+      }
+    },
     deleteSession(id) {
       this.$store.dispatch('sessionCollection/delete', id)
     },
@@ -79,7 +90,9 @@ export default {
 header {
   margin-bottom: 1em;
 }
-.session {
+.session.box {
+  margin-bottom: 0.5em;
+
   li {
     list-style: none;
     white-space: nowrap;
