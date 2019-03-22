@@ -8,14 +8,14 @@ VUE_APP_PROJECT_ID=
 ```
 ## Todo list
 ### Features
-[ ] Weight tracker
-[ ] Workout stats
-[ ] Share workout session
-[ ] Workout routines
+- [ ] Weight tracker
+- [ ] Workout stats
+- [ ] Share workout session
+- [ ] Workout routines
 
 ### Technical
-[x] Implement `vuex-easy-firestore`
-[ ] Create a reusable `sessionCard` component for the `SessionExisting` and `SessionNew` views.
+- [x] Implement `vuex-easy-firestore`
+- [ ] Create a reusable `sessionCard` component for the `SessionExisting` and `SessionNew` views.
 
 ## Project setup
 ```
