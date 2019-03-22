@@ -4,7 +4,9 @@
       <!-- i think this will be the session card -->
       <article class="session">
         <header>
-          <h2 class="subtitle">New session</h2>
+          <h2 class="subtitle">
+            New session
+          </h2>
         </header>
         <div class="content">
           <div class="workout-list" v-if="session.length > 0">
@@ -35,14 +37,14 @@
               </div>
             </div>
           </div>
-          <div class="hero-body has-text-centered has-text-grey-light" v-else>
-            <span>Get on it boi!</span>
+          <div class="hero-body has-text-centered has-background-light has-text-grey-light" v-else>
+            <p>Click the <b-icon icon="plus" size="is-small"></b-icon> icon below</p>
           </div>
         </div>
       </article>
     </div>
     <footer class="controls has-background-white">
-      <nav class="columns is-mobile is-variable is-1">
+      <nav class="columns is-mobile is-gapless">
         <div class="column">
           <button :class="controlButton" @click="saveSession" :disabled="session.length === 0">
             <b-icon icon="check" size="is-medium"></b-icon>
@@ -78,14 +80,18 @@ export default {
       controlButton: [
         'button',
         'is-fullwidth',
-        'is-medium',
-        'is-inverted',
+        'is-large',
+        'is-text',
         'has-text-grey-dark'
       ]
     }
   },
   methods: {
     addWorkout(workout) {
+      this.$toast.open({
+        message: 'Good job!',
+        type: 'is-primary'
+      })
       this.session.unshift(workout)
     },
     removeWorkout(i) {
@@ -94,7 +100,13 @@ export default {
     saveSession() {
       this.$store.dispatch('sessionCollection/insert', {
         workout: this.session
-      }).then(() => this.$router.push('/dashboard'))
+      }).then(() => {
+          this.$toast.open({
+            message: 'Session saved',
+            type: 'is-success'
+          })
+          this.$router.push('/dashboard')
+        })
     }
   }
 }
@@ -107,7 +119,6 @@ footer.controls {
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 0.5em;
   border-top: 1px solid #eee;
 }
 .session {

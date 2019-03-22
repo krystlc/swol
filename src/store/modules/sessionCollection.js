@@ -6,6 +6,6 @@ export default {
   namespaced: true,
   getters: {
     list: state => state.data,
-    storedSession: state => id => state.data.hasOwnProperty(id) ? state.data[id] : false
+    getSession: state => id => state.data[id]
   },
 }

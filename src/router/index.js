@@ -4,8 +4,8 @@ import { store } from '@/store'
 
 import Dashboard from '@/views/Dashboard'
 import Login from '@/views/Login'
-import Session from '@/views/Session'
-import NewSession from '@/views/NewSession'
+import SessionNew from '@/views/SessionNew'
+import SessionExisting from '@/views/SessionExisting'
 
 Vue.use(Router)
 
@@ -30,14 +30,14 @@ const router = new Router({
     },
     {
       path: '/s/new',
-      component: NewSession,
+      component: SessionNew,
       meta: {
         requiresAuth: true
       }
     },
     {
       path: '/s/:id',
-      component: NewSession,
+      component: SessionExisting,
       meta: {
         requiresAuth: true
       },

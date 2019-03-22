@@ -5,13 +5,13 @@
         <header>
           <h1 class="subtitle">My sessions</h1>
         </header>
-        <div class="session-list">
+        <div class="session-list" v-if="Object.entries(this.list).length > 0">
           <div class="box session is-clipped" v-for="(session, i) in list" :key="`session-${i}`">
             <div class="columns is-mobile is-gapless">
               <div class="column is-11" @click="openSession(session.id)">
                 <div class="content">
-                  <h6>
-                    {{ date(session) | moment('dddd') }}
+                  <h6 v-if="getDate(session)">
+                    {{ getDate(session) | moment('dddd') }}
                   </h6>
                   <ul v-for="(workout, j) in session.workout" :key="`exercise-${j}`" class="is-marginless">
                     <li>
@@ -37,11 +37,23 @@
             </div>
           </div>
         </div>
+        <div class="empty hero-body has-background-light has-text-centered has-text-grey-light" v-else>
+          <h6>Nothing to see here.</h6>
+        </div>
       </div>
       <div class="fab">
-        <router-link class="button is-primary" to="/s/new" tag="button">
-          <b-icon icon="plus" size="is-medium"></b-icon>
-        </router-link>
+        <b-tooltip
+          label="Start a new session!"
+          position="is-left"
+          :active="fabActive"
+          class="is-shadowless"
+          animated
+          always
+        >
+          <router-link class="button is-primary" to="/s/new" tag="button">
+            <b-icon icon="plus" size="is-medium"></b-icon>
+          </router-link>
+        </b-tooltip>
       </div>
     </div>
   </section>
@@ -51,21 +63,45 @@
 import { mapGetters } from 'vuex'
 
 export default {
+  data() {
+    return {
+      fabActive: false
+    }
+  },
   computed: {
     ...mapGetters('sessionCollection', ['list']),
   },
+  mounted() {
+    if (Object.entries(this.list).length === 0) {
+      this.fabActive = true
+      const timeout = 3000
+      setTimeout(() => {
+        this.fabActive = false
+      }, timeout);
+    }
+  },
   methods: {
-    date(session) {
-      if (session.hasOwnProperty('created')) {
+    getDate(session) {
+      if (session.hasOwnProperty('created_at')) {
+        if (session.created_at.hasOwnProperty('seconds')) {
+          return session.created_at.seconds
+        } else {
+          return Date.now()
+        }
+      } else if (session.hasOwnProperty('created')) {
         return session.created.seconds
-      } else if (session.hasOwnProperty('created_at')) {
-        return session.created_at
       } else {
-        return 'i don\'t know'
+        return false
       }
     },
     deleteSession(id) {
-      this.$store.dispatch('sessionCollection/delete', id)
+      this.$dialog.confirm({
+        message: 'Are you sure?',
+        onConfirm: () => {
+          this.$store.dispatch('sessionCollection/delete', id)
+            .then(() => this.$toast.open('Session deleted'))
+        }
+      })
     },
     openSession(id) {
       this.$router.push(`/s/${id}`)
