@@ -15,6 +15,7 @@ VUE_APP_PROJECT_ID=
 
 ### Technical
 - [x] Implement `vuex-easy-firestore`
+- [ ] Display `resistance` property if `true`.
 - [ ] Create a reusable `sessionCard` component for the `SessionExisting` and `SessionNew` views.
 
 ## Project setup
