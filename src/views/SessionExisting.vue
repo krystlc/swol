@@ -9,42 +9,11 @@
           </h2>
         </header>
         <div class="content">
-          <div class="workout-list" v-if="session.workout.length > 0">
-            <div class="box" v-for="(workout, i) in session.workout" :key="`workout-${i}`">
-              <div class="columns is-vcentered is-mobile is-gapless">
-                <div class="column is-11">
-                  <h6>
-                    {{ workout.exercise }}
-                    <b-tag type="is-warning" v-if="workout.resistance">
-                      Resistance
-                    </b-tag>
-                  </h6>
-                  <b-taglist v-for="(set, j) in workout.sets" :key="`workout-${i}-set${j}`" class="is-marginless">
-                    <b-tag type="is-white" class="has-text-grey-light">
-                      {{ ++j }}
-                    </b-tag>
-                    <b-tag type="is-white" class="is-medium">
-                      <template v-if="set.weight > 0">
-                        {{ set.weight }} <i class="has-text-grey">lbs</i>
-                      </template>
-                      <template v-else>
-                        Freeweight
-                      </template>
-                    </b-tag>
-                    <b-tag type="is-white" class="is-medium">
-                      {{ set.reps }} <i class="has-text-grey">reps</i>
-                    </b-tag>
-                  </b-taglist>
-                </div>
-                <div class="column">
-                  <button class="delete" @click="removeWorkout(i)" v-show="edit"></button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="hero-body has-text-centered has-background-light has-text-grey-light" v-else>
-            <span>Get on it boi!</span>
-          </div>
+          <workout-sets 
+            :payload="session.workout" 
+            :edit="edit" 
+            >
+          </workout-sets>
         </div>
       </article>
     </div>
@@ -78,11 +47,15 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import WorkoutSets from '@/components/WorkoutSets'
 import WorkoutForm from '@/components/WorkoutForm'
 
 export default {
   props: ['id'],
-  components: { WorkoutForm },
+  components: {
+    WorkoutSets,
+    WorkoutForm
+  },
   data() {
     return {
       session: {
@@ -190,12 +163,6 @@ footer.controls {
 .session {
   header {
     margin-bottom: 1em;
-  }
-  .box {
-    margin-bottom: 0.5em;
-  }
-  .tags .tag {
-    height: 1em;
   }
 }
 </style>
