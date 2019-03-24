@@ -16,7 +16,7 @@ VUE_APP_PROJECT_ID=
 
 ### Bugs
 - [ ] Allow workout editing.
-- [ ] Display `resistance` property if `true`.
+- [x] Display `resistance` property if `true`.
 - [ ] Create a reusable `sessionCard` component for the `SessionExisting` and `SessionNew` views.
 
 ## Project setup
