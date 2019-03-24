@@ -19,12 +19,22 @@
                         {{ workout.exercise }}
                       </span>
                       <b-taglist class="is-inline" attached>
-                        <b-tag>
-                          {{ workout.sets[0].weight }} <span class="is-italic">lbs</span>
-                          {{ workout.sets.length }} x {{ workout.sets[0].reps }} <span class="is-italic">reps</span>
-                        </b-tag>
                         <b-tag type="is-info" v-if="workout.pr">
                           PR
+                        </b-tag>
+                        <b-tag>
+                          <template v-if="getWeight(workout.sets)">
+                            {{ getWeight(workout.sets) }} <span class="is-italic">lbs</span>
+                          </template>
+                          <template v-else>
+                            Freeweight
+                          </template>
+                        </b-tag>
+                        <b-tag>
+                          {{ getSet(workout.sets) }} <span class="is-italic">reps</span>
+                        </b-tag>
+                        <b-tag type="is-warning" v-if="workout.resistance">
+                          R
                         </b-tag>
                       </b-taglist>
                     </li>
@@ -93,6 +103,13 @@ export default {
       } else {
         return false
       }
+    },
+    getSet(set) {
+      const reps = Math.max.apply(Math, set.map(set => set.reps))
+      return `${set.length} x ${reps}`
+    },
+    getWeight(set) {
+      return Math.max.apply(Math, set.map(set => set.weight))
     },
     deleteSession(id) {
       this.$dialog.confirm({
