@@ -13,7 +13,12 @@
             <div class="box" v-for="(workout, i) in session" :key="`workout-${i}`">
               <div class="columns is-vcentered is-mobile is-gapless">
                 <div class="column is-11">
-                  <h6>{{ workout.exercise }}</h6>
+                  <h6>
+                    {{ workout.exercise }}
+                    <b-tag type="is-warning" v-if="workout.resistance">
+                      Resistance
+                    </b-tag>
+                  </h6>
                   <b-taglist v-for="(set, j) in workout.sets" :key="`workout-${i}-set${j}`" class="is-marginless">
                     <b-tag type="is-white" class="has-text-grey-light">
                       {{ ++j }}
@@ -128,7 +133,7 @@ footer.controls {
   .box {
     margin-bottom: 0.5em;
   }
-  .tag {
+  .tags .tag {
     height: 1em;
   }
 }
