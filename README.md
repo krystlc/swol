@@ -1,4 +1,4 @@
-# swol-app
+# SWOL App
 You will need to create a Firebase app and paste the configuration in an .env file, like this:
 ```
 VUE_APP_API_KEY=
@@ -12,9 +12,10 @@ VUE_APP_PROJECT_ID=
 - [ ] Workout stats
 - [ ] Share workout session
 - [ ] Workout routines
-
-### Technical
 - [x] Implement `vuex-easy-firestore`
+
+### Bugs
+- [ ] Allow workout editing.
 - [ ] Display `resistance` property if `true`.
 - [ ] Create a reusable `sessionCard` component for the `SessionExisting` and `SessionNew` views.
 
