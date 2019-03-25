@@ -8,6 +8,7 @@ VUE_APP_PROJECT_ID=
 ```
 ## Todo list
 ### Features
+- [ ] Add new exercises
 - [ ] Weight tracker
 - [ ] Workout stats
 - [ ] Share workout session
