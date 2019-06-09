@@ -4,24 +4,19 @@
       <p class="modal-card-title">Add workout</p>
     </header>
     <section class="modal-card-body">
-      <b-field grouped>
-        <b-field label="Exercise" expanded>
-          <b-autocomplete
-            ref="exercise"
-            v-model="exercise"
-            placeholder="e.g. Pull-ups"
-            :keep-first="keepFirst"
-            :data="filteredDataObj"
-            field="name"
-            @select="option => option === selected"
-            required
-          >
-            <template slot="empty">No results found</template>
-          </b-autocomplete>
-        </b-field>
-          <b-field label="Resistance" class="has-text-right">
-            <b-checkbox v-model="resistance"></b-checkbox>
-          </b-field>
+      <b-field label="Exercise" expanded>
+        <b-autocomplete
+          ref="exercise"
+          v-model="exercise"
+          placeholder="e.g. Pull-ups"
+          :keep-first="keepFirst"
+          :data="filteredDataObj"
+          field="name"
+          @select="option => option === selected"
+          required
+        >
+          <template slot="empty">No results found</template>
+        </b-autocomplete>
       </b-field>
       <b-table :data="sets" :mobile-cards="false">
         <template slot-scope="props">
@@ -32,10 +27,20 @@
             <b-input type="number" v-model.number="props.row.weight" min="0" @focus="clearValue"></b-input>
           </b-table-column>
           <b-table-column label="Reps">
-            <b-input type="number" v-model.number="props.row.reps" min="1" required @focus="clearValue"></b-input>
+            <b-input
+              type="number"
+              v-model.number="props.row.reps"
+              min="1"
+              required
+              @focus="clearValue"
+            ></b-input>
           </b-table-column>
           <b-table-column width="30">
-            <button class="button is-info is-inverted" @click.prevent="addSet" v-if="props.index === sets.length">
+            <button
+              class="button is-info is-inverted"
+              @click.prevent="addSet"
+              v-if="props.index === sets.length"
+            >
               <b-icon icon="plus"></b-icon>
             </button>
             <button class="button is-text" @click.prevent="removeSet(props.index)" v-else>
@@ -44,21 +49,29 @@
           </b-table-column>
         </template>
       </b-table>
+      <hr>
+      <b-field class="has-text-right">
+        <b-checkbox v-model="resistance">Using resistance?</b-checkbox>
+      </b-field>
     </section>
     <footer class="modal-card-foot">
-      <button class="button is-primary" @click.prevent="saveWorkout" :disabled="exercise === ''">Save</button>
+      <button
+        class="button is-primary"
+        @click.prevent="saveWorkout"
+        :disabled="exercise === ''"
+      >Save</button>
       <button class="button" type="button" @click.prevent="$parent.close()">Close</button>
     </footer>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
-      exercise: '',
+      exercise: "",
       resistance: false,
       sets: [
         {
@@ -68,13 +81,13 @@ export default {
       ],
       selected: null,
       keepFirst: true
-    }
+    };
   },
   mounted() {
-    this.$refs.exercise.focus()
+    this.$refs.exercise.focus();
   },
   computed: {
-    ...mapGetters(['getExerciseList', 'getMaxWeight']),
+    ...mapGetters(["getExerciseList", "getMaxWeight"]),
     filteredDataObj() {
       return this.getExerciseList.filter(option => {
         return (
@@ -82,65 +95,38 @@ export default {
             .toString()
             .toLowerCase()
             .indexOf(this.exercise.toLowerCase()) >= 0
-        )
-      })
+        );
+      });
     },
     workout() {
       return {
         sets: this.sets,
         exercise: this.exercise,
-        resistance: this.resistance,
-      }
-    },
+        resistance: this.resistance
+      };
+    }
   },
-  // watch: {
-  //   exercise(newEx, oldEx) {
-  //     this.checkLastMax(newEx)
-  //   }
-  // },
   methods: {
     addSet() {
-      const lastSet = this.sets[this.sets.length - 1]
+      const lastSet = this.sets[this.sets.length - 1];
       const newSet = {
         reps: lastSet.reps,
         weight: lastSet.weight
-      }
-      this.sets.push(newSet)
+      };
+      this.sets.push(newSet);
     },
     removeSet(item) {
-      this.sets.splice(item - 1, 1)
+      this.sets.splice(item - 1, 1);
     },
     saveWorkout() {
-      this.$emit('workout', this.workout)
-      this.$parent.close()
+      this.$emit("workout", this.workout);
+      this.$parent.close();
     },
     clearValue(e) {
-      e.target.value = null
+      e.target.value = null;
     }
-    // checkLastMax(newEx) {
-    //   if (this.exercise in this.getMaxWeight) {
-    //     this.sets[0].weight = this.getMaxWeight[this.exercise]
-    //   } else {
-    //     // TODO: convert to toast
-    //     alert(false, this.exercise, this.getMaxWeight)
-    //   }
-    // },
-    // setNewMax() {
-    //   const newMax = Math.max.apply(Math, this.sets.map(m => m.weight))
-    //   if (newMax > this.getMaxWeight[this.exercise] || !this.getMaxWeight[this.exercise]) {
-    //     const maxWeight = JSON.parse(JSON.stringify(this.getMaxWeight))
-    //     maxWeight[this.exercise] = newMax
-    //     console.log(maxWeight)
-    //     const user = userCollection.doc(this.getUserId).update({ maxWeight }).then(() => {
-    //     }).catch(err => {
-    //       console.log('could not set new max', err)
-    //     })
-    //   } else {
-    //     return
-    //   }
-    // }
   }
-}
+};
 </script>
 
 <style lang="scss">
