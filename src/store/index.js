@@ -18,7 +18,7 @@ fb.auth.onAuthStateChanged(user => {
     store.dispatch('userDoc/openDBChannel')
     store.dispatch('sessionCollection/fetchAndAdd', {
       where: [['created_by', '==', '{userId}']],
-      orderBy: ['created_at','desc'],
+      orderBy: ['created_at', 'desc'],
       limit: 5
     })
     store.dispatch('loadExerciseList')
@@ -48,10 +48,13 @@ const defaultSettings = {
   suggestions: false
 }
 
-const easyFirestores  = createEasyFirestore([userDoc, sessionDoc, sessionCollection], {
-  logging: true,
-  preventInitialDocInsertion: true
-})
+const easyFirestores = createEasyFirestore(
+  [userDoc, sessionDoc, sessionCollection],
+  {
+    logging: true,
+    preventInitialDocInsertion: true
+  }
+)
 
 export const store = new Vuex.Store({
   plugins: [easyFirestores],
@@ -77,18 +80,18 @@ export const store = new Vuex.Store({
     }
   },
   actions: {
-    signIn({commit}) {
-      fb.auth.signInWithPopup(fb.provider)
-        .then(res => {
-          commit('setUser', res.user.uid)
-          router.push('/dashboard')
-        })
-        .catch(err => {
-          alert(`Oops! ${err}`)
-        })
+    async signIn({ commit }) {
+      try {
+        const user = await fb.auth.signInWithPopup(fb.provider)
+        commit('setUser', user.uid)
+        router.push('/dashboard')
+      } catch (err) {
+        alert('Could not log in, sorry.')
+      }
     },
-    signOut({commit}) {
-      fb.auth.signOut()
+    signOut({ commit }) {
+      fb.auth
+        .signOut()
         .then(() => {
           commit('setUser', null)
           commit('setSessions', [])
@@ -99,8 +102,9 @@ export const store = new Vuex.Store({
           alert(`Oops! ${err}`)
         })
     },
-    loadExerciseList({commit}) {
-      axios.get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
+    loadExerciseList({ commit }) {
+      axios
+        .get('https://wger.de/api/v2/exercise?language=2&limit=1000&status=2')
         .then(res => {
           commit('setExerciseList', res.data.results)
         })

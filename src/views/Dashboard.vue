@@ -10,32 +10,28 @@
             <div class="columns is-mobile is-gapless">
               <div class="column is-11" @click="openSession(session.id)">
                 <div class="content">
-                  <h6 v-if="getDate(session)">
-                    {{ getDate(session) | moment('dddd') }}
-                  </h6>
-                  <ul v-for="(workout, j) in session.workout" :key="`exercise-${j}`" class="is-marginless">
+                  <h6 v-if="getDate(session)">{{ getDate(session) | moment('dddd') }}</h6>
+                  <ul
+                    v-for="(workout, j) in session.workout"
+                    :key="`exercise-${j}`"
+                    class="is-marginless"
+                  >
                     <li>
-                      <span class="workout-name">
-                        {{ workout.exercise }}
-                      </span>
+                      <span class="workout-name">{{ workout.exercise }}</span>
                       <b-taglist class="is-inline" attached>
-                        <b-tag type="is-info" v-if="workout.pr">
-                          PR
-                        </b-tag>
+                        <b-tag type="is-info" v-if="workout.pr">PR</b-tag>
                         <b-tag>
                           <template v-if="getWeight(workout.sets)">
-                            {{ getWeight(workout.sets) }} <span class="is-italic">lbs</span>
+                            {{ getWeight(workout.sets) }}
+                            <span class="is-italic">lbs</span>
                           </template>
-                          <template v-else>
-                            Freeweight
-                          </template>
+                          <template v-else>Freeweight</template>
                         </b-tag>
                         <b-tag>
-                          {{ getSet(workout.sets) }} <span class="is-italic">reps</span>
+                          {{ getSet(workout.sets) }}
+                          <span class="is-italic">reps</span>
                         </b-tag>
-                        <b-tag type="is-warning" v-if="workout.resistance">
-                          R
-                        </b-tag>
+                        <b-tag type="is-warning" v-if="workout.resistance">R</b-tag>
                       </b-taglist>
                     </li>
                   </ul>
@@ -47,7 +43,10 @@
             </div>
           </div>
         </div>
-        <div class="empty hero-body has-background-light has-text-centered has-text-grey-light" v-else>
+        <div
+          class="empty hero-body has-background-light has-text-centered has-text-grey-light"
+          v-else
+        >
           <h6>Nothing to see here.</h6>
         </div>
       </div>
@@ -70,61 +69,62 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 
 export default {
   data() {
     return {
       fabActive: false
-    }
+    };
   },
   computed: {
-    ...mapGetters('sessionCollection', ['list']),
+    ...mapGetters("sessionCollection", ["list"])
   },
   mounted() {
     if (Object.entries(this.list).length === 0) {
-      this.fabActive = true
-      const timeout = 3000
+      this.fabActive = true;
+      const timeout = 3000;
       setTimeout(() => {
-        this.fabActive = false
+        this.fabActive = false;
       }, timeout);
     }
   },
   methods: {
     getDate(session) {
-      if (session.hasOwnProperty('created_at')) {
-        if (session.created_at.hasOwnProperty('seconds')) {
-          return session.created_at.seconds
+      if (session.hasOwnProperty("created_at")) {
+        if (session.created_at.hasOwnProperty("seconds")) {
+          return session.created_at.seconds;
         } else {
-          return Date.now()
+          return Date.now();
         }
-      } else if (session.hasOwnProperty('created')) {
-        return session.created.seconds
+      } else if (session.hasOwnProperty("created")) {
+        return session.created.seconds;
       } else {
-        return false
+        return false;
       }
     },
     getSet(set) {
-      const reps = Math.max.apply(Math, set.map(set => set.reps))
-      return `${set.length} x ${reps}`
+      const reps = Math.max.apply(Math, set.map(set => set.reps));
+      return `${set.length} x ${reps}`;
     },
     getWeight(set) {
-      return Math.max.apply(Math, set.map(set => set.weight))
+      return Math.max.apply(Math, set.map(set => set.weight));
     },
     deleteSession(id) {
       this.$dialog.confirm({
-        message: 'Are you sure?',
+        message: "Are you sure?",
         onConfirm: () => {
-          this.$store.dispatch('sessionCollection/delete', id)
-            .then(() => this.$toast.open('Session deleted'))
+          this.$store
+            .dispatch("sessionCollection/delete", id)
+            .then(() => this.$toast.open("Session deleted"));
         }
-      })
+      });
     },
     openSession(id) {
-      this.$router.push(`/s/${id}`)
+      this.$router.push(`/s/${id}`);
     }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -132,7 +132,7 @@ export default {
   position: fixed;
   bottom: 2em;
   right: 2em;
-  
+
   .button {
     width: 4em;
     height: 4em;
