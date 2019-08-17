@@ -1,153 +1,66 @@
 <template>
-  <section class="section">
-    <div class="container">
-      <div class="dashboard">
-        <header>
-          <h1 class="subtitle">My sessions</h1>
-        </header>
-        <div class="session-list" v-if="Object.entries(this.list).length > 0">
-          <div class="box session is-clipped" v-for="(session, i) in list" :key="`session-${i}`">
-            <div class="columns is-mobile is-gapless">
-              <div class="column is-11" @click="openSession(session.id)">
-                <div class="content">
-                  <h6 v-if="getDate(session)">{{ getDate(session) | moment('dddd') }}</h6>
-                  <ul
-                    v-for="(workout, j) in session.workout"
-                    :key="`exercise-${j}`"
-                    class="is-marginless"
-                  >
-                    <li>
-                      <span class="workout-name">{{ workout.exercise }}</span>
-                      <b-taglist class="is-inline" attached>
-                        <b-tag type="is-info" v-if="workout.pr">PR</b-tag>
-                        <b-tag>
-                          <template v-if="getWeight(workout.sets)">
-                            {{ getWeight(workout.sets) }}
-                            <span class="is-italic">lbs</span>
-                          </template>
-                          <template v-else>Freeweight</template>
-                        </b-tag>
-                        <b-tag>
-                          {{ getSet(workout.sets) }}
-                          <span class="is-italic">reps</span>
-                        </b-tag>
-                        <b-tag type="is-warning" v-if="workout.resistance">R</b-tag>
-                      </b-taglist>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="column has-text-right">
-                <button class="delete" @click="deleteSession(session.id)"></button>
-              </div>
+  <default-layout>
+    <section class="section" id="dashboard">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-8">
+            <div class="box is-paddingless">
+              <dashboard-heatmap></dashboard-heatmap>
             </div>
           </div>
-        </div>
-        <div
-          class="empty hero-body has-background-light has-text-centered has-text-grey-light"
-          v-else
-        >
-          <h6>Nothing to see here.</h6>
+          <div class="column">
+            <div class="box">
+              <h3 class="subtitle">Latest</h3>
+              <div class="content is-small">
+                <h5>{{ latestDate | date("dddd, MMMM Do YYYY") }}</h5>
+                <ol type="1" v-if="latest">
+                  <li v-for="(item, i) in latest.workout" :key="i">
+                    <span class="exercise">{{ item.exercise }}</span>
+                    <b-tag>{{ item | formatSet }}</b-tag>
+                  </li>
+                </ol>
+              </div>
+            </div>
+            <div class="box">popular exercises</div>
+          </div>
         </div>
       </div>
-      <div class="fab">
-        <b-tooltip
-          label="Start a new session!"
-          position="is-left"
-          :active="fabActive"
-          class="is-shadowless"
-          animated
-          always
-        >
-          <router-link class="button is-primary" to="/s/new" tag="button">
-            <b-icon icon="plus" size="is-medium"></b-icon>
-          </router-link>
-        </b-tooltip>
-      </div>
-    </div>
-  </section>
+    </section>
+    <new-session-btn></new-session-btn>
+  </default-layout>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { dateFilter } from "vue-date-fns";
 
 export default {
-  data() {
-    return {
-      fabActive: false
-    };
-  },
-  computed: {
-    ...mapGetters("sessionCollection", ["list"])
-  },
-  mounted() {
-    if (Object.entries(this.list).length === 0) {
-      this.fabActive = true;
-      const timeout = 3000;
-      setTimeout(() => {
-        this.fabActive = false;
-      }, timeout);
+  filters: {
+    date: dateFilter,
+    formatSet(workout) {
+      const sets = workout.sets.length;
+      const reps = workout.sets[0].reps;
+      return `${sets} x ${reps} reps`;
     }
   },
-  methods: {
-    getDate(session) {
-      if (session.hasOwnProperty("created_at")) {
-        if (session.created_at.hasOwnProperty("seconds")) {
-          return session.created_at.seconds;
-        } else {
-          return Date.now();
-        }
-      } else if (session.hasOwnProperty("created")) {
-        return session.created.seconds;
-      } else {
-        return false;
-      }
-    },
-    getSet(set) {
-      const reps = Math.max.apply(Math, set.map(set => set.reps));
-      return `${set.length} x ${reps}`;
-    },
-    getWeight(set) {
-      return Math.max.apply(Math, set.map(set => set.weight));
-    },
-    deleteSession(id) {
-      this.$dialog.confirm({
-        message: "Are you sure?",
-        onConfirm: () => {
-          this.$store
-            .dispatch("sessionCollection/delete", id)
-            .then(() => this.$toast.open("Session deleted"));
-        }
-      });
-    },
-    openSession(id) {
-      this.$router.push(`/s/${id}`);
+  components: {
+    DefaultLayout: () => import("@/layouts/DefaultLayout"),
+    NewSessionBtn: () => import("@/components/NewSessionBtn"),
+    DashboardHeatmap: () => import("@/components/DashboardHeatmap")
+  },
+  computed: {
+    ...mapGetters("sessionCollection", ["latest"]),
+    latestDate() {
+      return this.latest ? this.latest.created_at.toDate() : null;
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.fab {
-  position: fixed;
-  bottom: 2em;
-  right: 2em;
-
-  .button {
-    width: 4em;
-    height: 4em;
-    border-radius: 50%;
-  }
-}
-header {
-  margin-bottom: 1em;
-}
-.session.box {
-  margin-bottom: 0.5em;
-
-  li {
-    list-style: none;
-    white-space: nowrap;
-  }
+.tag {
+  height: 1rem;
+  font-style: italic;
+  margin-left: 0.25rem;
 }
 </style>
