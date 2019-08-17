@@ -12,8 +12,9 @@
     "buefy": "^0.8.2",
     "firebase": "^6.4.0",
     "vue": "^2.5.21",
-    "vue-moment": "^4.0.0",
+    "vue-date-fns": "^1.1.0",
     "vue-router": "^3.0.2",
+    "vue2-frappe": "^1.0.28",
     "vuex": "^3.0.1",
     "vuex-easy-firestore": "^1.30.0"
   },
