@@ -5,7 +5,7 @@ import { store } from '@/store'
 const fb = require('@/firebaseConfig')
 
 import Buefy from 'buefy'
-import 'buefy/dist/buefy.css'
+import '@/styles/global.scss'
 
 import VueMoment from 'vue-moment'
 
