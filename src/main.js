@@ -4,15 +4,14 @@ import router from '@/router/'
 import { store } from '@/store'
 const fb = require('@/firebaseConfig')
 
+import Chart from 'vue2-frappe'
 import Buefy from 'buefy'
 import '@/styles/global.scss'
 
-import VueMoment from 'vue-moment'
-
 Vue.config.productionTip = false
 
+Vue.use(Chart)
 Vue.use(Buefy)
-Vue.use(VueMoment)
 
 // handle page reloads
 let app
